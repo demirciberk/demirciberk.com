@@ -6,7 +6,7 @@
 <title>Berk Demirci - AI/ML Engineer</title>
 <meta name="description" content="Berk Demirci - AI/ML engineer in Ankara, Turkiye. Final-year Computer Engineering student at TED University working on RAG systems, fine-tuning, and AI agents.">
 <meta name="color-scheme" content="light">
-<meta name="theme-color" content="#FBFAF7">
+<meta name="theme-color" content="#FDF6D5">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Berk Demirci - AI/ML Engineer">
 <meta property="og:description" content="Final-year Computer Engineering student at TED University focused on Machine Learning, NLP, and AI agents / fine-tuning.">
@@ -34,13 +34,15 @@
 <script>document.documentElement.className += " js";</script>
 <style>
   :root {
-    --bg: #FBFAF7;
-    --surface: #FFFFFF;
-    --line: #E4E1DA;
-    --fg: #18181B;
-    --muted: #6B6B72;
-    --accent: #0A6B52;
-    --tag-bg: #F1EFEA;
+    --bg: #FDF6D5;
+    --surface: #FFFDF2;
+    --line: #E0D7AC;
+    --fg: #151313;
+    --muted: #5C5A52;
+    --accent: #8B2F2F;
+    --flame: #FFA83A;
+    --leaf: #5B8749;
+    --shinobi: #2B2A32;
     --sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
     --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -107,8 +109,8 @@
     display: none;
     pointer-events: none;
     background:
-      radial-gradient(58% 46% at 50% 28%, rgba(10, 107, 82, 0.07), rgba(251, 250, 247, 0) 72%),
-      radial-gradient(38% 38% at 82% 72%, rgba(10, 107, 82, 0.04), rgba(251, 250, 247, 0) 70%);
+      radial-gradient(58% 46% at 50% 28%, rgba(255, 168, 58, 0.14), rgba(253, 246, 213, 0) 72%),
+      radial-gradient(38% 38% at 82% 72%, rgba(91, 135, 73, 0.10), rgba(253, 246, 213, 0) 70%);
   }
 
   /* header outranks main: it creates a stacking context, so .nav's z-index
@@ -123,7 +125,7 @@
     left: 0;
     right: 0;
     z-index: 10;
-    background: rgba(251, 250, 247, 0.92);
+    background: rgba(253, 246, 213, 0.92);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--line);
@@ -218,6 +220,15 @@
     margin: 0 0 22px;
   }
 
+  /* Chakra Flame swash: a bar painted behind the bottom of one h1 phrase.
+     Text stays --fg on top of it, so the 1.77:1 flame is never the text color. */
+  .hero h1 .flame {
+    background-image: linear-gradient(var(--flame), var(--flame));
+    background-repeat: no-repeat;
+    background-size: 100% 0.35em;
+    background-position: 0 78%;
+  }
+
   .lede {
     font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
     color: var(--fg);
@@ -245,7 +256,7 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--accent);
-    border-bottom: 1px solid rgba(10, 107, 82, 0.3);
+    border-bottom: 1px solid rgba(139, 47, 47, 0.35);
     padding-bottom: 3px;
   }
   .arrow-link:hover { text-decoration: none; border-bottom-color: var(--accent); }
@@ -329,7 +340,8 @@
   }
   .card:hover, .card:focus-visible {
     text-decoration: none;
-    box-shadow: 0 1px 2px rgba(24, 24, 27, 0.04), 0 8px 24px rgba(24, 24, 27, 0.04);
+    border-color: var(--accent);
+    box-shadow: 0 1px 2px rgba(43, 42, 50, 0.04), 0 8px 24px rgba(43, 42, 50, 0.04);
   }
 
   .card h3 { font-size: 1.375rem; }
@@ -341,9 +353,9 @@
     font-size: 0.625rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--muted);
-    background: var(--tag-bg);
-    border: 1px solid var(--line);
+    color: var(--fg);
+    background: var(--flame);
+    border: 0;
     border-radius: 999px;
     padding: 4px 10px;
     white-space: nowrap;
@@ -372,7 +384,7 @@
     padding-bottom: 6px;
     word-break: break-word;
   }
-  .contact-mail:hover { color: var(--accent); text-decoration: none; border-bottom-color: rgba(10, 107, 82, 0.5); }
+  .contact-mail:hover { color: var(--accent); text-decoration: none; border-bottom-color: rgba(139, 47, 47, 0.5); }
 
   .contact-links {
     list-style: none;
@@ -396,9 +408,11 @@
   .contact-links svg { flex: none; color: var(--accent); }
 
   /* ---------- footer ---------- */
-  .foot {
-    border-top: 1px solid var(--line);
+  footer {
+    background: var(--flame);
     margin-top: clamp(48px, 6vw, 80px);
+  }
+  .foot {
     padding: 28px 0 40px;
     display: flex;
     flex-wrap: wrap;
@@ -408,7 +422,7 @@
     font-size: 0.6875rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: var(--fg);
   }
 
   /* ---------- reveal ---------- */
@@ -472,7 +486,7 @@
   <section id="hero" class="hero">
     <div class="wrap">
       <p class="label">AI &amp; Machine Learning</p>
-      <h1>Berk Demirci</h1>
+      <h1>Berk <span class="flame">Demirci</span></h1>
       <p class="lede">Final-year Computer Engineering student at TED University (GPA 3.70), focused on Machine Learning, NLP, and AI agents / fine-tuning.</p>
       <p class="hero-loc">Ankara, Turkiye</p>
       <div class="hero-links">
@@ -729,8 +743,8 @@ function initField() {
   const cur = new Float32Array(COUNT * 3);
   const colors = new Float32Array(COUNT * 3);
 
-  const ink = new THREE.Color(0x0A6B52);
-  const graphite = new THREE.Color(0x3F3F46);
+  const ink = new THREE.Color(0x8B2F2F);
+  const graphite = new THREE.Color(0x5B8749);
 
   // Box-Muller; precomputed once, no per-frame maths beyond the lerp.
   const gauss = () => {
