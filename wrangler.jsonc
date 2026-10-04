@@ -1,0 +1,9 @@
+{
+  "name": "demirciberk-com",
+  "compatibility_date": "2026-09-15",
+  "assets": { "directory": "." },
+  "routes": [
+    { "pattern": "demirciberk.com", "custom_domain": true },
+    { "pattern": "www.demirciberk.com", "custom_domain": true }
+  ]
+}

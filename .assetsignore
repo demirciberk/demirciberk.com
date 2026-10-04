@@ -1,0 +1,6 @@
+.git
+.gitignore
+.wrangler
+.playwright-cli
+wrangler.jsonc
+.assetsignore
