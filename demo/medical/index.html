@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Medical Expense Prediction - Live demo - Berk Demirci</title>
+<meta name="description" content="Live demo: predict yearly medical insurance charges with a linear regression model trained on the insurance dataset.">
+<meta name="theme-color" content="#FDF6D5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Instrument+Serif&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  :root {
+    --bg: #FDF6D5; --surface: #FFFDF2; --line: #E0D7AC; --fg: #151313; --muted: #5C5A52; --accent: #8B2F2F;
+    --sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --serif: "Instrument Serif", Georgia, serif;
+    --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 1rem/1.65 var(--sans); }
+  main { max-width: 720px; margin: 0 auto; padding: clamp(40px, 7vw, 80px) 24px; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .label { font: 500 0.6875rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 18px; }
+  h1 { font: 400 clamp(2.2rem, 6vw, 3.25rem)/1.05 var(--serif); letter-spacing: -0.02em; margin: 0 0 14px; }
+  .lede { color: var(--muted); margin: 0 0 32px; }
+  form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: clamp(20px, 4vw, 30px); }
+  label { display: grid; gap: 6px; font-size: 0.875rem; color: var(--muted); }
+  input, select { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 9px 10px; }
+  output { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 18px; }
+  output strong { display: block; font: 400 clamp(2.4rem, 7vw, 3.5rem)/1 var(--serif); }
+  output span { font-size: 0.875rem; color: var(--muted); }
+  .note { font-size: 0.875rem; color: var(--muted); margin: 24px 0 0; }
+  .links { display: flex; gap: 24px; margin-top: 28px; font: 500 0.6875rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  @media (max-width: 520px) { form { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <p class="label">Live demo</p>
+  <h1>Medical Expense Prediction</h1>
+  <p class="lede">Estimate yearly medical insurance charges from six patient attributes. Runs entirely in your browser.</p>
+
+  <form id="f">
+    <label>Age <input name="age" type="number" min="18" max="100" value="30" required></label>
+    <label>BMI <input name="bmi" type="number" min="10" max="60" step="any" value="25" required></label>
+    <label>Children <input name="children" type="number" min="0" max="10" value="0" required></label>
+    <label>Sex
+      <select name="sex"><option value="female">Female</option><option value="male">Male</option></select>
+    </label>
+    <label>Smoker
+      <select name="smoker"><option value="no">No</option><option value="yes">Yes</option></select>
+    </label>
+    <label>Region (US)
+      <select name="region">
+        <option value="northeast">Northeast</option><option value="northwest">Northwest</option>
+        <option value="southeast">Southeast</option><option value="southwest">Southwest</option>
+      </select>
+    </label>
+    <output id="out" for="f" aria-live="polite"><span>Estimated yearly charges</span><strong>-</strong></output>
+  </form>
+
+  <p class="note">Model: scikit-learn <code>LinearRegression</code> trained on 1,070 rows of the public insurance dataset (seed-42 80/20 split, same as the repository pipeline). Test R² 0.78, MAE about $4,181. Educational demo, not medical or financial advice.</p>
+
+  <nav class="links">
+    <a href="https://github.com/demirciberk/medical_cost" target="_blank" rel="noopener">View code on GitHub</a>
+    <a href="../../index.html#projects">Back to projects</a>
+  </nav>
+</main>
+<script>
+// Coefficients exported from the fitted sklearn Pipeline (one-hot features, see repository training step).
+const M = {
+  intercept: -574.5357125101673,
+  age: 256.9757058311944, bmi: 337.0925519487757, children: 425.2787835242757,
+  sex: { female: 9.295845820509722, male: -9.29584582051356 },
+  smoker: { no: -11825.564427880625, yes: 11825.564427880614 },
+  region: { northeast: 459.58524424372865, northwest: 88.90791801592395, southeast: -198.2790523209104, southwest: -350.21410993874343 },
+};
+const predict = (x) => M.intercept + M.age * x.age + M.bmi * x.bmi + M.children * x.children
+  + M.sex[x.sex] + M.smoker[x.smoker] + M.region[x.region];
+
+const f = document.getElementById("f");
+const out = document.querySelector("#out strong");
+const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+function update() {
+  if (!f.checkValidity()) { out.textContent = "-"; return; }
+  const d = Object.fromEntries(new FormData(f));
+  // Linear model can go negative at extreme inputs; charges cannot.
+  out.textContent = usd.format(Math.max(0, predict({ ...d, age: +d.age, bmi: +d.bmi, children: +d.children })));
+}
+f.addEventListener("input", update);
+update();
+</script>
+</body>
+</html>
