@@ -69,7 +69,7 @@
     <article id="detail" aria-live="polite"><p>Loading run data...</p></article>
   </div>
 
-  <p class="note">Data: saved outputs from a February 2026 dry run (enrichment via Ollama/Gemini, scoring by the matcher agent, drafts by the outreach agent). Recipient addresses are removed. Five companies whose LLM evaluation failed validation are left out.</p>
+  <p class="note">Data: saved outputs from a February 2026 dry run (enrichment via Ollama/Gemini, scoring by the matcher agent, drafts by the outreach agent). Company names and domains are masked and recipient addresses are removed. Five companies whose LLM evaluation failed validation are left out.</p>
 
   <nav class="links">
     <a href="https://github.com/demirciberk" target="_blank" rel="noopener">GitHub</a>
@@ -83,7 +83,7 @@ let rows = [], current = null;
 
 function show(c) {
   current = c;
-  document.querySelectorAll("#list button").forEach((b) => b.setAttribute("aria-current", b.dataset.d === c.domain));
+  document.querySelectorAll("#list button").forEach((b) => b.setAttribute("aria-current", +b.dataset.d === c.id));
   $("#detail").innerHTML = `
     <h2>${esc(c.company_name)}</h2>
     <p>${esc(c.industry)} · ${esc(c.domain)} · <span class="score">${c.score}/100</span></p>
@@ -98,7 +98,7 @@ function render() {
   const q = $("#q").value.trim().toLocaleLowerCase("tr"), ind = $("#ind").value, min = +$("#min").value;
   const hits = rows.filter((c) => c.score >= min && (!ind || c.industry === ind) &&
     (!q || `${c.company_name} ${c.core_business} ${c.domain}`.toLocaleLowerCase("tr").includes(q)));
-  $("#list").innerHTML = hits.map((c) => `<li><button type="button" data-d="${esc(c.domain)}">
+  $("#list").innerHTML = hits.map((c) => `<li><button type="button" data-d="${c.id}">
     <span>${esc(c.company_name)}<small>${esc(c.industry)}</small></span><span class="score">${c.score}</span></button></li>`).join("")
     || '<li style="padding:14px">No companies match.</li>';
   if (hits.length && !hits.includes(current)) show(hits[0]);
@@ -106,7 +106,7 @@ function render() {
 
 $("#list").addEventListener("click", (e) => {
   const b = e.target.closest("button");
-  if (b) show(rows.find((c) => c.domain === b.dataset.d));
+  if (b) show(rows.find((c) => c.id === +b.dataset.d));
 });
 ["#q", "#ind", "#min"].forEach((s) => $(s).addEventListener("input", render));
 
