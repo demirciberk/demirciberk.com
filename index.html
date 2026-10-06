@@ -371,6 +371,9 @@
     text-transform: uppercase;
     color: var(--accent);
   }
+  .card-links { gap: 20px; flex-wrap: wrap; }
+  .card-links a { display: inline-flex; align-items: center; gap: 8px; color: inherit; }
+  .card-links a:hover { text-decoration: underline; }
 
   /* ---------- contact ---------- */
   .contact-mail {
@@ -592,7 +595,7 @@
       </div>
       <div class="cards" data-stagger>
 
-        <a class="card" href="demo/koku/index.html" data-reveal>
+        <div class="card" data-reveal>
           <h3>koku</h3>
           <p>Turkish perfume search: an 8B teacher writes synthetic data, a 0.6B student is distilled from it, and a fine-tuned retriever lifts nDCG@10 from 0.18 to 0.48 on 183 Turkish queries.</p>
           <ul class="tags">
@@ -600,10 +603,15 @@
             <li>Retrieval</li>
             <li>Fine-tuning</li>
           </ul>
-          <span class="card-foot">See search replay
-            <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M4 12 12 4M6 4h6v6"></path></svg>
+          <span class="card-foot card-links">
+            <a href="demo/koku/index.html">See search replay
+              <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M4 12 12 4M6 4h6v6"></path></svg>
+            </a>
+            <a href="demo/koku/pipeline.html">How it was built
+              <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M4 12 12 4M6 4h6v6"></path></svg>
+            </a>
           </span>
-        </a>
+        </div>
 
         <a class="card" href="https://github.com/demirciberk/uni_bot" target="_blank" rel="noopener" data-reveal>
           <h3>UniBot</h3>
