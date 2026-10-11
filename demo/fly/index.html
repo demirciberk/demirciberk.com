@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fly wardrobe - koku - Berk Demirci</title>
+<meta name="description" content="A 3D fruit fly picks a perfume for the office, a date and the gym from a reshuffled wardrobe using the koku retriever, then tracks the odor plume there while its brain lights up.">
+<meta name="theme-color" content="#FDF6D5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Instrument+Serif&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  :root {
+    --bg: #FDF6D5; --surface: #FFFDF2; --line: #E0D7AC; --fg: #151313; --muted: #5C5A52; --accent: #8B2F2F; --ok: #2F6B3A;
+    --wood: #3A2A1E; --wood-2: #4A3626;
+    --sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --serif: "Instrument Serif", Georgia, serif;
+    --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 1rem/1.6 var(--sans); }
+  main { max-width: 1180px; margin: 0 auto; padding: clamp(40px, 7vw, 80px) 24px; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .label { font: 500 0.6875rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 18px; }
+  h1 { font: 400 clamp(2.2rem, 6vw, 3.25rem)/1.05 var(--serif); letter-spacing: -0.02em; margin: 0 0 14px; }
+  h2 { font: 400 1.5rem/1.1 var(--serif); margin: 0 0 4px; }
+  .lede { color: var(--muted); margin: 0 0 28px; max-width: 68ch; }
+  .back { display: inline-block; margin-bottom: 28px; font-size: 0.875rem; }
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+
+  /* world */
+  .world { position: relative; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #F6EDC4; aspect-ratio: 16 / 9; }
+  .world canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
+  .hud { position: absolute; left: 14px; top: 14px; right: 14px; display: flex; justify-content: space-between; gap: 10px; pointer-events: none; }
+  .chip { pointer-events: auto; font: 500 0.75rem/1.4 var(--mono); color: var(--fg); background: rgba(255, 253, 242, 0.86); backdrop-filter: blur(6px); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; max-width: 70%; }
+  .chip .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-right: 8px; vertical-align: 1px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; pointer-events: auto; justify-content: flex-end; }
+  button { font: inherit; font-size: 0.8125rem; color: var(--fg); background: rgba(255, 253, 242, 0.86); backdrop-filter: blur(6px); border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px; cursor: pointer; transition: border-color .15s, transform .12s var(--ease-out); }
+  button:hover { border-color: var(--accent); }
+  button:active { transform: scale(0.97); }
+  button.go { font-weight: 500; }
+  button.go:disabled { opacity: 0.45; cursor: default; transform: none; border-color: var(--line); }
+  button.go[aria-pressed="true"] { opacity: 1; background: var(--accent); border-color: var(--accent); color: #FFF6DE; }
+  .loading { position: absolute; inset: 0; display: grid; place-items: center; font: 500 0.75rem var(--mono); color: var(--muted); transition: opacity .4s; }
+  .loading.done { opacity: 0; pointer-events: none; }
+
+  .below { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 16px; margin-top: 16px; align-items: start; }
+
+  /* brain */
+  .brain-wrap { position: relative; aspect-ratio: 4 / 3; border-radius: 8px; background: radial-gradient(120% 90% at 50% 40%, #241A14, #120D0A); overflow: hidden; }
+  .brain-wrap canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+  .brain-wrap canvas:active { cursor: grabbing; }
+  .brain-hint { position: absolute; right: 10px; bottom: 8px; font: 500 0.625rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255, 244, 220, 0.45); pointer-events: none; }
+  .regions { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 14px; }
+  .regions li { font-size: 0.75rem; line-height: 1.25; }
+  .regions li { position: relative; cursor: help; border-radius: 4px; }
+  .regions b { font-weight: 500; text-decoration: underline dotted var(--muted); text-underline-offset: 3px; }
+  .tip { position: absolute; left: 0; bottom: calc(100% + 8px); z-index: 5; width: min(240px, 70vw); padding: 8px 10px; border-radius: 8px; background: var(--fg); color: #FFF6DE; font-size: 0.75rem; line-height: 1.4; box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    opacity: 0; transform: translateY(4px) scale(0.97); transform-origin: bottom left; pointer-events: none; transition: opacity .15s var(--ease-out), transform .2s var(--ease-out); }
+  .tip::after { content: ""; position: absolute; left: 14px; top: 100%; border: 6px solid transparent; border-top-color: var(--fg); }
+  .regions li:nth-child(2n) .tip { left: auto; right: 0; transform-origin: bottom right; }
+  .regions li:nth-child(2n) .tip::after { left: auto; right: 14px; }
+  .regions li:hover .tip, .regions li:focus-visible .tip { opacity: 1; transform: none; }
+  .regions small { color: var(--muted); }
+  .meter { height: 3px; background: var(--line); border-radius: 2px; margin-top: 3px; overflow: hidden; }
+  .meter i { display: block; height: 100%; width: 100%; transform-origin: left; transform: scaleX(0); background: var(--c); }
+  .sub { font-size: 0.8125rem; color: var(--muted); margin: 0 0 12px; }
+
+  /* wardrobe */
+  .query { font-size: 0.875rem; color: var(--muted); margin: 0 0 14px; min-height: 2.8em; }
+  .cabinet { background: linear-gradient(180deg, var(--wood-2), var(--wood)); border-radius: 10px; padding: 10px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), inset 0 10px 30px rgba(0,0,0,0.25); }
+  .shelf { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px 8px; margin: 0; padding: 8px 4px 0; list-style: none;
+    background: repeating-linear-gradient(180deg, transparent 0 calc(var(--row) - 8px), #2A1D13 calc(var(--row) - 8px) var(--row)); --row: 136px; }
+  .bottle { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; height: 120px; padding: 0 2px; transition: opacity .35s var(--ease-out), transform .45s var(--ease-out), filter .35s; }
+  .glass { position: relative; width: 34px; height: 50px; margin-top: 10px; border-radius: 9px 9px 7px 7px; background: linear-gradient(105deg, rgba(255,255,255,0.55) 0 18%, rgba(255,255,255,0) 30%), var(--tint); box-shadow: inset 0 -12px 0 rgba(0,0,0,0.12), 0 4px 10px rgba(0,0,0,0.35); }
+  .glass::before { content: ""; position: absolute; left: 50%; top: -12px; width: 14px; height: 12px; transform: translateX(-50%); border-radius: 3px 3px 1px 1px; background: linear-gradient(90deg, #C9B27A, #F3E3B0 45%, #9C844E); }
+  .bottle b { display: block; margin-top: 8px; font-weight: 500; font-size: 0.6875rem; line-height: 1.2; color: #F6EBD0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .bottle small { display: block; font-size: 0.625rem; color: rgba(246, 235, 208, 0.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .bottle.scan .glass { box-shadow: inset 0 -12px 0 rgba(0,0,0,0.12), 0 0 0 2px rgba(255, 240, 200, 0.8), 0 0 18px rgba(255, 220, 150, 0.6); }
+  .cabinet.judged .bottle:not(.fit) { opacity: 0.3; filter: saturate(0.4); }
+  .bottle.fit .glass { box-shadow: inset 0 -12px 0 rgba(0,0,0,0.12), 0 0 0 2px #7FBF8A, 0 4px 10px rgba(0,0,0,0.35); }
+  .bottle.pick { transform: translateY(-8px); }
+  .bottle.pick .glass { box-shadow: inset 0 -12px 0 rgba(0,0,0,0.12), 0 0 0 2px #F3E3B0, 0 0 26px rgba(255, 210, 140, 0.85); }
+  .bottle.pick b { color: #FFF6DE; }
+  .score { font: 500 0.5625rem var(--mono); color: rgba(246, 235, 208, 0.7); margin-top: 2px; opacity: 0; transition: opacity .3s; }
+  .cabinet.judged .score { opacity: 1; }
+  .pick-desc { font-size: 0.875rem; margin: 14px 0 0; min-height: 5.5em; }
+  .pick-desc b { font-weight: 500; }
+  .pick-desc .acc { margin-left: 8px; font-size: 0.75rem; color: var(--muted); }
+  .note { color: var(--muted); font-size: 0.8125rem; margin-top: 28px; max-width: 80ch; }
+
+  @media (max-width: 900px) { .below { grid-template-columns: 1fr; } .world { aspect-ratio: 4 / 3; } }
+  @media (max-width: 520px) { .shelf { grid-template-columns: repeat(3, minmax(0, 1fr)); } .chip { max-width: 100%; font-size: 0.6875rem; padding: 4px 10px; } .hud { left: 10px; top: 10px; right: 10px; flex-direction: column; align-items: flex-start; gap: 6px; } button { padding: 3px 10px; font-size: 0.75rem; } }
+  /* desktop: the whole demo fits one screen */
+  @media (min-width: 1000px) and (min-height: 600px) {
+    main { max-width: 1600px; padding: 14px 20px 40px; display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(360px, 1fr); grid-template-rows: auto calc(100svh - 96px) auto; gap: 12px; }
+    .top { grid-column: 1 / -1; display: flex; align-items: center; gap: 20px; min-height: 58px; }
+    .top .back { margin: 0 0 2px; font-size: 0.75rem; }
+    .top .label { margin: 0; white-space: nowrap; }
+    h1 { font-size: 1.9rem; margin: 0; white-space: nowrap; }
+    .lede { margin: 0; font-size: 0.8125rem; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .world { aspect-ratio: auto; height: 100%; }
+    .below { margin: 0; align-items: stretch; grid-template-columns: 1fr; grid-template-rows: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: 12px; min-height: 0; height: 100%; }
+    .panel { padding: 12px 14px; display: flex; flex-direction: column; min-height: 0; }
+    h2 { font-size: 1.2rem; }
+    .sub { display: none; }
+    .brain-wrap { flex: 1 1 0; aspect-ratio: auto; min-height: 0; }
+    .brain-wrap canvas { position: absolute; inset: 0; }
+    .regions { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px 12px; margin-top: 8px; }
+    .regions li { font-size: 0.6875rem; }
+    .regions small { display: none; }
+    .regions li:nth-child(2n) .tip { left: 0; right: auto; transform-origin: bottom left; }
+    .regions li:nth-child(2n) .tip::after { left: 14px; right: auto; }
+    .regions li:nth-child(3n) .tip { left: auto; right: 0; transform-origin: bottom right; }
+    .regions li:nth-child(3n) .tip::after { left: auto; right: 14px; }
+    .query { margin: 0 0 8px; min-height: 0; font-size: 0.8125rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cabinet { flex: 1 1 0; min-height: 0; display: flex; padding: 6px 8px; overflow: hidden; }
+    .below > .panel { overflow: hidden; }
+    .shelf { flex: 1; grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 0; padding: 0; background: none; }
+    .bottle { height: auto; min-height: 0; justify-content: flex-end; padding: 0 3px 3px; border-bottom: 5px solid #2A1D13; }
+    .glass { width: 22px; height: 30px; margin-top: 10px; border-radius: 6px 6px 5px 5px; flex: none; }
+    .glass::before { top: -8px; width: 9px; height: 8px; }
+    .bottle b { margin-top: 4px; font-size: 0.625rem; -webkit-line-clamp: 1; }
+    .bottle small { display: none; }
+    .bottle.pick { transform: translateY(-4px); }
+    .pick-desc { margin: 8px 0 0; min-height: 0; font-size: 0.75rem; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .pick-desc .acc { font-size: 0.6875rem; }
+    .note { grid-column: 1 / -1; margin-top: 16px; }
+  }
+  @media (min-width: 1000px) and (min-height: 600px) and (max-height: 820px) {
+    .glass { width: 15px; height: 20px; margin-top: 6px; border-radius: 4px; }
+    .glass::before { top: -6px; width: 7px; height: 6px; }
+    .bottle b { margin-top: 2px; line-height: 1.1; }
+    .score { margin-top: 0; line-height: 1.1; }
+    .regions { margin-top: 6px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .bottle, .meter i { transition: none; } }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<main>
+  <header class="top">
+    <div><a class="back" href="../../index.html#projects">&larr; Back to projects</a><p class="label">koku &middot; fly wardrobe</p></div>
+    <h1>A fly with a perfume habit</h1>
+    <p class="lede">Before every trip the fly gets a freshly shuffled wardrobe of twelve perfumes. The koku retriever scores each bottle against Turkish queries for where it is going (office, date, gym), the fly sprays one of the bottles that fit, then tracks the odor plume there while its brain lights up.</p>
+  </header>
+
+  <div class="world">
+    <canvas id="world" aria-label="3D map: a fruit fly flies from home to the office, a restaurant and a gym"></canvas>
+    <div class="hud">
+      <p class="chip" id="status" aria-live="polite"><span class="dot"></span>Loading…</p>
+      <div class="controls">
+        <button class="go" data-go="office" type="button">Office</button>
+        <button class="go" data-go="date" type="button">Date</button>
+        <button class="go" data-go="gym" type="button">Gym</button>
+        <button id="pause" type="button">Pause</button>
+      </div>
+    </div>
+    <div class="loading" id="loading">Loading fly and brain meshes…</div>
+  </div>
+
+  <div class="below">
+    <section class="panel">
+      <h2>Inside its head</h2>
+      <p class="sub">Real FlyWire neuropil meshes and points from about 200 real neurons on the smell pathway. Glow shows which areas this behavior leans on; drag to rotate.</p>
+      <div class="brain-wrap"><canvas id="brain" aria-label="3D fruit fly brain with regions lighting up"></canvas><span class="brain-hint">drag</span></div>
+      <ul class="regions" id="regions"></ul>
+    </section>
+    <section class="panel">
+      <h2 id="scene">Wardrobe</h2>
+      <p class="query" id="query" lang="tr"></p>
+      <div class="cabinet" id="cabinet"><ul class="shelf" id="shelf" lang="tr"></ul></div>
+      <p class="pick-desc" id="pick" lang="tr"></p>
+    </section>
+  </div>
+
+  <p class="note">How picks stay sensible: a perfume counts as a fit for a place only if the fine-tuned BGE-M3 ranks it in the top 10% of the pool for that place's queries <em>and</em> its accords pass a simple rule (nothing heavy at the gym, nothing sharp and cold on a date). Each wardrobe holds three fits and nine others; the fly samples among the fits, weighted by score. All scores were computed offline. The flight is a hand-written plume-tracking loop (surge upwind while in the odor, cast crosswind when it is lost, land by sight up close), the behavior real flies show. The brain glow is an illustrative mapping of that behavior onto the regions known to handle it (antennal lobes for smell, lateral horn and mushroom body for innate and learned odor value, central complex for steering, optic lobes for landing), not a simulation of the <a href="https://hms.harvard.edu/news/researchers-publish-first-complete-connectome-fruit-fly-brain-spinal-cord">fruit fly connectome</a>. 3D fly: <a href="https://github.com/NeLy-EPFL/flygym">NeuroMechFly (flygym)</a>, NeLy lab, EPFL, from a micro-CT scan of an adult <i>Drosophila</i>; Apache-2.0, simplified and re-rigged. Brain: FlyWire connectome of the adult female <i>Drosophila</i> brain (FAFB; FlyWire Consortium, Princeton), CC BY-NC 4.0; Dorkenwald et al. 2024 and Schlegel et al. 2024, <i>Nature</i> 634; neuropil meshes after Ito et al. 2014 (JFRC2); neuron skeletons from the public FAFB CATMAID. Perfume data: Fragrantica dataset on Kaggle (CC BY-NC-SA 4.0). Code: <a href="https://github.com/demirciberk/koku">github.com/demirciberk/koku</a>.</p>
+</main>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const damp = (a, b, k, dt) => a + (b - a) * (1 - Math.exp(-k * dt));
+const wrap = (a) => ((a + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI;
+
+// ---------- simulation (2D, px units; world = px / 100) ----------
+const W = 720, H = 480, S = 100;
+const PLACES = {
+  home: { x: 120, y: 250, name: "Home" },
+  office: { x: 600, y: 90, name: "Office" },
+  date: { x: 610, y: 400, name: "Restaurant" },
+  gym: { x: 330, y: 420, name: "Gym" },
+};
+const ORDER = ["office", "date", "gym"];
+const FEMALE = { x: 640, y: 400 }; // she waits at the restaurant; he lands across the table from her
+const LAND = { date: { x: 580, y: 400 } };
+const FRESH = ["narenciye", "ferah", "sulu", "yeşil", "aromatik", "ferah baharatlı", "ozonlu", "deniz"];
+const SWEET = ["tatlı", "vanilyalı", "amber", "sıcak baharatlı", "ballı", "kahveli", "çikolatalı", "karamelli"];
+const tint = (p) => p.a.some((a) => SWEET.includes(a)) ? "#B5653A" : p.a.some((a) => FRESH.includes(a)) ? "#4E8C96" : "#8C7350";
+
+let D, sceneIdx = -1, scene, shelf, pick, last = {};
+let paused = false, phase = "idle", timer = 0;
+const fly = { x: PLACES.home.x, y: PLACES.home.y, h: 0, cast: 1, lost: 0, turn: 0, smellL: 0, smellR: 0, alt: 0, speed: 0 };
+let target = null, wind = { x: 0, y: 0 }, puffs = [], trail = [];
+
+const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+// Wardrobe: 3 fits + 9 non-fits for this scene. Pick: softmax over fits' scores, never the previous pick here.
+function newShelf(j) {
+  const fits = D.perfumes.filter((p) => p.f[j] && p.id !== last[j]);
+  const rest = D.perfumes.filter((p) => !p.f[j]);
+  return shuffle([...shuffle(fits).slice(0, 3), ...shuffle(rest).slice(0, 9)]);
+}
+function choose(items, j, T = 0.01) {
+  const c = items.filter((p) => p.f[j]);
+  const m = Math.max(...c.map((p) => p.s[j]));
+  const w = c.map((p) => Math.exp((p.s[j] - m) / T));
+  let r = Math.random() * w.reduce((a, b) => a + b, 0);
+  return c.find((_, i) => (r -= w[i]) <= 0) || c[0];
+}
+
+function status(text) { $("status").innerHTML = `<span class="dot"></span>${esc(text)}`; }
+
+function renderShelf(j) {
+  $("cabinet").className = "cabinet";
+  $("shelf").innerHTML = shelf.map((p, i) =>
+    `<li class="bottle" data-i="${i}" style="--tint:${tint(p)}"><span class="glass"></span><b>${esc(p.n)}</b><small>${esc(p.b)}</small><span class="score">${p.s[j].toFixed(3)}</span></li>`).join("");
+}
+function reveal() {
+  const j = sceneIdx;
+  $("cabinet").className = "cabinet judged";
+  $("shelf").querySelectorAll(".bottle").forEach((el, i) => {
+    el.classList.remove("scan");
+    el.classList.toggle("fit", !!shelf[i].f[j]);
+    el.classList.toggle("pick", shelf[i] === pick);
+  });
+  $("pick").innerHTML = `<b>${esc(pick.n)}</b> · ${esc(pick.b)}<span class="acc">${esc(pick.a.join(", "))}</span><br>${esc(pick.d)}`;
+}
+
+function setButtons() {
+  document.querySelectorAll("button.go").forEach((b) => {
+    b.disabled = phase !== "idle";
+    b.setAttribute("aria-pressed", String(phase !== "idle" && b.dataset.go === scene));
+  });
+}
+
+function startTrip(to) {
+  if (phase !== "idle") return;
+  scene = to;
+  sceneIdx = ORDER.indexOf(to);
+  const j = sceneIdx, s = D.scenes[scene];
+  shelf = newShelf(j);
+  pick = choose(shelf, j);
+  last[j] = pick.id;
+  $("scene").textContent = `Wardrobe · ${s.label}`;
+  $("query").textContent = `“${s.queries[Math.random() * s.queries.length | 0]}”`;
+  $("pick").innerHTML = "";
+  renderShelf(j);
+  Object.assign(fly, { x: PLACES.home.x, y: PLACES.home.y, alt: 0, speed: 0 });
+  trail = []; puffs = [];
+  phase = "choose"; timer = 0;
+  setTrailColor(tint(pick));
+  setButtons();
+  status(`At home, choosing a perfume for the ${PLACES[scene].name.toLowerCase()}`);
+}
+
+function startFlight(to) {
+  target = { ...PLACES[to], ...LAND[to] };
+  const dx = fly.x - target.x, dy = fly.y - target.y, d = Math.hypot(dx, dy);
+  wind = { x: dx / d, y: dy / d }; // wind blows from the target toward the fly, carrying the plume
+  fly.h = Math.atan2(-dy, -dx) + (Math.random() - 0.5);
+  puffs = []; for (let i = 0; i < 300; i++) puffStep(1 / 60); // the place has been smelling for a while before the fly sets off
+  phase = to === "home" ? "return" : "fly"; timer = 0;
+}
+
+function step(dt) {
+  timer += dt;
+  if (phase === "choose") {
+    // sweep over the bottles while "thinking", then reveal
+    const k = Math.floor(timer / 0.11) % shelf.length;
+    $("shelf").querySelectorAll(".bottle").forEach((el, i) => el.classList.toggle("scan", i === k));
+    if (timer > 2.2) { reveal(); status(`Spraying ${pick.n}`); phase = "wait"; timer = 0; }
+  } else if (phase === "wait" && timer > 1.6) { status(`Wearing ${pick.n} · tracking the plume to the ${PLACES[scene].name.toLowerCase()}`); startFlight(scene); }
+  else if (phase === "fly" || phase === "return") flyStep(dt);
+  else if (phase === "arrived") {
+    if (scene === "date") { // turn to face her, then court
+      const face = Math.atan2(FEMALE.y - fly.y, FEMALE.x - fly.x);
+      fly.h += clamp(wrap(face - fly.h), -3 * dt, 3 * dt);
+      if (timer > 0.8 && timer - dt <= 0.8) status(`Courtship song, wearing ${pick.n}`);
+    }
+    if (timer > (scene === "date" ? 5.5 : 2.4)) { status("Heading home"); startFlight("home"); }
+  }
+  else if (phase === "home" && timer > 1.2) { phase = "idle"; setButtons(); status("Back home. Where to next?"); }
+  if (phase !== "fly" && phase !== "return") { fly.speed = damp(fly.speed, 0, 6, dt); fly.alt = damp(fly.alt, 0, 5, dt); fly.turn = damp(fly.turn, 0, 6, dt); fly.smellL = fly.smellR = 0; }
+}
+
+// Plume tracking: puffs drift downwind from the target with some spread. In odor: surge upwind.
+// Lost: cast crosswind in widening zigzags. Close up: land by sight. Long search: home in so a trip always ends.
+function puffStep(dt) {
+  if (Math.random() < 0.7) puffs.push({ x: target.x, y: target.y, vx: wind.x * 80 + (Math.random() - 0.5) * 40, vy: wind.y * 80 + (Math.random() - 0.5) * 40, age: 0, z: 0.3 + Math.random() * 0.2 });
+  for (const p of puffs) { p.x += p.vx * dt; p.y += p.vy * dt; p.vx += (Math.random() - 0.5) * 60 * dt; p.vy += (Math.random() - 0.5) * 60 * dt; p.age += dt; p.z += dt * 0.04; }
+  puffs = puffs.filter((p) => p.age < 7);
+}
+const odorAt = (x, y) => puffs.reduce((s, p) => s + (Math.hypot(p.x - x, p.y - y) < 6 + p.age * 4 ? 1 : 0), 0);
+
+function flyStep(dt) {
+  puffStep(dt);
+  const smell = puffs.some((p) => Math.hypot(p.x - fly.x, p.y - fly.y) < 6 + p.age * 4);
+  // two antennae, ~8px apart: only drives the brain display
+  const ax = Math.cos(fly.h + Math.PI / 2) * 8, ay = Math.sin(fly.h + Math.PI / 2) * 8;
+  fly.smellL = damp(fly.smellL, Math.min(1, odorAt(fly.x - ax, fly.y - ay) / 3), 10, dt);
+  fly.smellR = damp(fly.smellR, Math.min(1, odorAt(fly.x + ax, fly.y + ay) / 3), 10, dt);
+  const up = Math.atan2(-wind.y, -wind.x);
+  let want;
+  if (smell) { fly.lost = 0; fly.cast = Math.sign(fly.cast); want = up + (Math.random() - 0.5) * 0.4; }
+  else { fly.lost += dt; if (fly.lost > 0.35 * Math.abs(fly.cast)) { fly.cast = -Math.sign(fly.cast) * Math.min(Math.abs(fly.cast) + 0.5, 3); fly.lost = 0; } want = up + Math.sign(fly.cast) * 1.1; }
+  const dist = Math.hypot(target.x - fly.x, target.y - fly.y);
+  fly.landing = dist < 80;
+  if (timer > 6 || fly.landing) want = Math.atan2(target.y - fly.y, target.x - fly.x);
+  const dh = clamp(wrap(want - fly.h), -6 * dt, 6 * dt);
+  fly.h += dh;
+  fly.turn = damp(fly.turn, dh / dt, 8, dt);
+  const v = (smell ? 150 : 110) * clamp(timer / 0.5, 0.25, 1) * (fly.landing ? clamp(dist / 80, 0.45, 1) : 1);
+  fly.speed = v;
+  fly.x += Math.cos(fly.h) * v * dt; fly.y += Math.sin(fly.h) * v * dt;
+  if (fly.x < 12 || fly.x > W - 12) { fly.h = Math.PI - fly.h; fly.x = clamp(fly.x, 12, W - 12); }
+  if (fly.y < 12 || fly.y > H - 12) { fly.h = -fly.h; fly.y = clamp(fly.y, 12, H - 12); }
+  // altitude: climb out, cruise, flare down onto the pad
+  const cruise = 0.42;
+  fly.alt = damp(fly.alt, cruise * clamp((dist - 18) / 70, 0, 1), fly.landing ? 6 : 2.5, dt);
+  trail.push([fly.x, fly.y, fly.alt]); if (trail.length > 900) trail.shift();
+  if (dist < 8) {
+    puffs = [];
+    if (phase === "fly") { phase = "arrived"; status(`Landed at the ${target.name.toLowerCase()} wearing ${pick.n}`); }
+    else { phase = "home"; status("Home"); }
+    timer = 0;
+  }
+}
+
+// ---------- world rendering ----------
+const wc = $("world");
+const renderer = new THREE.WebGLRenderer({ canvas: wc, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+const world = new THREE.Scene();
+world.background = new THREE.Color("#F6EDC4");
+world.fog = new THREE.Fog("#F6EDC4", 14, 30);
+const cam = new THREE.PerspectiveCamera(38, 16 / 9, 0.05, 60);
+// overview of the whole map; drag to orbit, wheel or pinch to zoom
+const MAP_CENTER = new THREE.Vector3(0.05, 0, -0.15);
+cam.position.set(-1.2, 5.6, 4.6);
+const worldOrbit = new OrbitControls(cam, wc);
+Object.assign(worldOrbit, { enableDamping: true, dampingFactor: 0.08, enablePan: false, minDistance: 2.5, maxDistance: 11, maxPolarAngle: 1.35 });
+worldOrbit.target.copy(MAP_CENTER);
+worldOrbit.touches = { ONE: null, TWO: THREE.TOUCH.DOLLY_ROTATE }; // one finger keeps scrolling the page
+wc.style.touchAction = "pan-y";
+let fitted = 0;
+
+world.add(new THREE.HemisphereLight("#FFF8E6", "#C9B98A", 1.4));
+const sun = new THREE.DirectionalLight("#FFF1D6", 2.2);
+sun.position.set(-3, 6, 3);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -5, right: 5, top: 4, bottom: -4, near: 0.5, far: 20 });
+sun.shadow.bias = -0.0005;
+sun.shadow.radius = 4;
+world.add(sun);
+
+const toW = (x, y) => new THREE.Vector3((x - W / 2) / S, 0, (y - H / 2) / S);
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.MeshStandardMaterial({ color: "#F3E8BC", roughness: 1 }));
+ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; world.add(ground);
+const grid = new THREE.GridHelper(12, 30, "#E2D49E", "#EADFAF");
+grid.position.y = 0.001; world.add(grid);
+
+const mat = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.85, ...o });
+function box(w, h, d, m) { const g = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); g.position.y = h / 2; g.castShadow = g.receiveShadow = true; return g; }
+function label(text) {
+  const c = document.createElement("canvas"); c.width = 256; c.height = 64;
+  const x = c.getContext("2d");
+  x.font = "500 26px 'JetBrains Mono', monospace"; x.textAlign = "center"; x.textBaseline = "middle";
+  x.fillStyle = "rgba(255,253,242,0.9)"; const w = x.measureText(text).width + 28;
+  x.beginPath(); x.roundRect(128 - w / 2, 12, w, 40, 20); x.fill();
+  x.fillStyle = "#151313"; x.fillText(text, 128, 33);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, transparent: true, sizeAttenuation: false }));
+  s.scale.set(0.16, 0.04, 1); // screen-space, so labels stay readable at every zoom
+  s.renderOrder = 10; return s;
+}
+// small low-poly buildings set behind each landing pad
+const pads = {};
+function building(key) {
+  const g = new THREE.Group(), cream = mat("#FFFDF2"), dark = mat("#5C5A52"), acc = mat("#8B2F2F");
+  if (key === "home") {
+    g.add(box(0.7, 0.45, 0.6, cream));
+    const roof = new THREE.Mesh(new THREE.ConeGeometry(0.56, 0.3, 4), acc); roof.position.y = 0.6; roof.rotation.y = Math.PI / 4; roof.castShadow = true; g.add(roof);
+    const door = box(0.14, 0.24, 0.02, mat("#3A2A1E")); door.position.z = 0.31; g.add(door);
+  } else if (key === "office") {
+    g.add(box(0.55, 1.3, 0.5, cream));
+    for (let i = 0; i < 6; i++) { const w = box(0.47, 0.06, 0.01, mat("#9DB7C0", { emissive: "#9DB7C0", emissiveIntensity: 0.15 })); w.position.set(0, 0.15 + i * 0.19, 0.255); g.add(w); }
+  } else if (key === "date") {
+    g.add(box(0.8, 0.45, 0.55, cream));
+    const aw = box(0.84, 0.04, 0.22, acc); aw.position.set(0, 0.36, 0.36); aw.rotation.x = 0.35; g.add(aw);
+    const table = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.012, 24), cream); table.position.set(0, 0.11, 0.62); table.castShadow = true; g.add(table);
+    const leg = box(0.014, 0.11, 0.014, dark); leg.position.set(0, 0, 0.62); g.add(leg);
+    const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.05, 8), cream); candle.position.set(0, 0.14, 0.62); g.add(candle);
+    const flame = new THREE.Mesh(new THREE.SphereGeometry(0.01, 8, 8), new THREE.MeshBasicMaterial({ color: "#FFB547" })); flame.position.set(0, 0.172, 0.62); g.add(flame);
+    const glow = new THREE.PointLight("#FFB547", 0.35, 0.8); glow.position.set(0, 0.2, 0.62); g.add(glow);
+  } else if (key === "gym") {
+    g.add(box(0.85, 0.4, 0.6, cream));
+    const stripe = box(0.86, 0.06, 0.61, mat("#2F6B3A")); stripe.position.y = 0.3; g.add(stripe);
+    const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.36, 8), dark); bar.rotation.z = Math.PI / 2; bar.position.set(-0.3, 0.06, 0.62); g.add(bar);
+    for (const s of [-1, 1]) { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.03, 16), dark); p.rotation.z = Math.PI / 2; p.position.set(-0.3 + s * 0.15, 0.06, 0.62); p.castShadow = true; g.add(p); }
+  }
+  return g;
+}
+for (const [k, p] of Object.entries(PLACES)) {
+  const at = toW(p.x, p.y);
+  const pad = new THREE.Mesh(new THREE.RingGeometry(0.16, 0.22, 48), new THREE.MeshBasicMaterial({ color: "#E0D7AC", transparent: true }));
+  pad.rotation.x = -Math.PI / 2; pad.position.copy(at).setY(0.003); world.add(pad); pads[k] = pad;
+  const b = building(k); b.position.copy(at).add(new THREE.Vector3(0, 0, -0.62)); world.add(b);
+  const l = label(p.name.toUpperCase()); l.position.copy(at).add(new THREE.Vector3(0, 0.02, 0.42)); world.add(l);
+}
+
+// plume: soft points with per-point fade
+const MAXP = 700;
+const plumeGeo = new THREE.BufferGeometry();
+plumeGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(MAXP * 3), 3));
+plumeGeo.setAttribute("aFade", new THREE.BufferAttribute(new Float32Array(MAXP), 1));
+plumeGeo.setAttribute("aSize", new THREE.BufferAttribute(new Float32Array(MAXP), 1));
+const plumeMat = new THREE.ShaderMaterial({
+  transparent: true, depthWrite: false,
+  uniforms: { uColor: { value: new THREE.Color("#4E8C96") }, uScale: { value: 400 } },
+  vertexShader: `attribute float aFade; attribute float aSize; varying float vFade; uniform float uScale;
+    void main(){ vFade = aFade; vec4 mv = modelViewMatrix * vec4(position,1.); gl_PointSize = min(aSize * uScale / -mv.z, 160.); gl_Position = projectionMatrix * mv; }`,
+  fragmentShader: `uniform vec3 uColor; varying float vFade;
+    void main(){ float d = length(gl_PointCoord - .5); float a = (1. - smoothstep(0., .5, d)) * (1. - smoothstep(0., .5, d)) * vFade; if (a < .003) discard; gl_FragColor = vec4(uColor, a); }`,
+});
+const plume = new THREE.Points(plumeGeo, plumeMat); plume.frustumCulled = false; world.add(plume);
+
+// trail: line with per-vertex alpha via vertex colors blended toward the ground
+const MAXT = 900;
+const trailGeo = new THREE.BufferGeometry();
+trailGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(MAXT * 3), 3));
+const trailLine = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({ color: "#4E8C96", transparent: true, opacity: 0.6 }));
+trailLine.frustumCulled = false; world.add(trailLine);
+// ground shadow of the path, so altitude reads
+const shadowLine = new THREE.Line(new THREE.BufferGeometry().setAttribute("position", new THREE.BufferAttribute(new Float32Array(MAXT * 3), 3)), new THREE.LineBasicMaterial({ color: "#151313", transparent: true, opacity: 0.08 }));
+shadowLine.frustumCulled = false; world.add(shadowLine);
+function setTrailColor(c) { plumeMat.uniforms.uColor.value.set(c); trailLine.material.color.set(c); }
+
+// ---------- fly model ----------
+const flyRoot = new THREE.Group(); world.add(flyRoot);
+const flyPivot = new THREE.Group(); flyRoot.add(flyPivot); // bank/pitch
+const FLY_SCALE = 0.42;
+const rig = {}; // name -> { node, rest: Quaternion }
+const herRig = {};
+const her = new THREE.Group(); world.add(her);
+const RIG = { // joint axes in each node's local frame, matched to fly.glb's rest pose
+  // NeuroMechFly local axes: X = pitch (flexion), Y = roll, Z = yaw; right side mirrors Y and Z.
+  // Wings rest folded over the abdomen; a local-Y turn of about -80 deg (left) spreads them into the stroke plane.
+  wingAxis: new THREE.Vector3(0, 1, 0), wingSign: { wing_L: 1, wing_R: -1 }, wingSpread: -1.35, wingAmp: 0.6,
+  legAxis: new THREE.Vector3(1, 0, 0), tuck: 0.7, headAxis: new THREE.Vector3(0, 0, 1), standY: 0.47,
+};
+const _q = new THREE.Quaternion();
+function pose(name, axis, angle, rg = rig) {
+  const r = rg[name]; if (!r) return;
+  r.node.quaternion.copy(r.rest).multiply(_q.setFromAxisAngle(axis, angle));
+}
+// faint stroke-envelope "blur" planes so a 200 Hz wingbeat reads at 60 fps
+const blurs = [];
+
+// ---------- brain ----------
+const bc = $("brain");
+const brainR = new THREE.WebGLRenderer({ canvas: bc, antialias: true, alpha: true });
+brainR.setPixelRatio(Math.min(devicePixelRatio, 2));
+brainR.outputColorSpace = THREE.SRGBColorSpace;
+const brainScene = new THREE.Scene();
+const brainCam = new THREE.PerspectiveCamera(32, 4 / 3, 0.01, 50);
+brainCam.position.set(0, 0.5, 3.3);
+const orbit = new OrbitControls(brainCam, bc);
+Object.assign(orbit, { enableZoom: false, enablePan: false, enableDamping: true, dampingFactor: 0.08 });
+// idle sway around the front view; a drag takes over and the sway resumes a few seconds later
+let dragging = false, idleAt = 0;
+orbit.addEventListener("start", () => { dragging = true; });
+orbit.addEventListener("end", () => { dragging = false; idleAt = performance.now() / 1000; });
+brainScene.add(new THREE.AmbientLight("#ffffff", 0.5));
+const key = new THREE.DirectionalLight("#FFE9C9", 1.6); key.position.set(2, 3, 4); brainScene.add(key);
+const rim = new THREE.DirectionalLight("#9FC3FF", 0.8); rim.position.set(-3, -1, -3); brainScene.add(rim);
+
+const REGIONS = [
+  { key: "AL", nodes: ["AL_L", "AL_R"], name: "Antennal lobes", role: "smell in", color: "#F2B04B",
+    tip: "First stop for smell. About 50 glomeruli each collect one odor receptor type from the antennae; comparing left and right tells the fly which side the odor is on." },
+  { key: "LH", nodes: ["LH_L", "LH_R"], name: "Lateral horn", role: "innate odor value", color: "#E8734A",
+    tip: "Innate meaning of a smell: approach or avoid without any learning, like food odors versus danger." },
+  { key: "MB", nodes: ["MB_L", "MB_R"], name: "Mushroom body", role: "learned preference", color: "#D45A8A",
+    tip: "Learning and memory. About 2,000 Kenyon cells per side link odors to reward or punishment, so preferences can change with experience." },
+  { key: "CX", nodes: ["CX"], name: "Central complex", role: "heading, steering", color: "#7FB8E0",
+    tip: "The fly's internal compass: tracks which way it is heading and picks turns toward a goal." },
+  { key: "OL", nodes: ["OL_L", "OL_R"], name: "Optic lobes", role: "vision, landing", color: "#8FD0A0",
+    tip: "Vision. They hold most of the brain's neurons and detect motion and looming objects, which guides landing." },
+  { key: "GNG", nodes: ["GNG"], name: "Gnathal ganglia", role: "to the body", color: "#C7A6F0",
+    tip: "Taste and feeding, and a hub where descending signals leave the brain for the legs and wings." },
+];
+const act = Object.fromEntries(["AL_L", "AL_R", "LH", "MB", "CX", "OL", "GNG"].map((k) => [k, 0]));
+const regionMeshes = {}; // node name -> mesh
+const centroid = {}; // node name -> Vector3
+$("regions").innerHTML = REGIONS.map((r) => `<li tabindex="0" aria-describedby="tip-${r.key}"><span class="tip" role="tooltip" id="tip-${r.key}">${r.tip}</span><b>${r.name}</b> <small>${r.role}</small><div class="meter" style="--c:${r.color}"><i id="m-${r.key}"></i></div></li>`).join("");
+
+// signal pulses travelling between regions
+const MAXS = 260;
+const sigGeo = new THREE.BufferGeometry();
+sigGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(MAXS * 3), 3));
+sigGeo.setAttribute("color", new THREE.BufferAttribute(new Float32Array(MAXS * 3), 3));
+const dotTex = (() => { const c = document.createElement("canvas"); c.width = c.height = 64; const x = c.getContext("2d"); const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, "rgba(255,255,255,1)"); g.addColorStop(0.35, "rgba(255,255,255,0.5)"); g.addColorStop(1, "rgba(255,255,255,0)"); x.fillStyle = g; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); })();
+const sigPts = new THREE.Points(sigGeo, new THREE.PointsMaterial({ size: 0.09, map: dotTex, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+sigPts.frustumCulled = false; brainScene.add(sigPts);
+let signals = [];
+// olfactory pathway edges (source node, destination node)
+const EDGES = [["AL_L", "LH_L"], ["AL_R", "LH_R"], ["AL_L", "MB_L"], ["AL_R", "MB_R"], ["LH_L", "CX"], ["LH_R", "CX"], ["MB_L", "CX"], ["MB_R", "CX"], ["OL_L", "CX"], ["OL_R", "CX"], ["CX", "GNG"]];
+const regionOf = (node) => node.replace(/_[LR]$/, "");
+const actOf = (node) => node.startsWith("AL_") ? act[node] : act[regionOf(node)];
+const colorOf = (node) => new THREE.Color(REGIONS.find((r) => r.nodes.includes(node)).color);
+
+// ---------- loading ----------
+const loader = new GLTFLoader();
+const load = (u) => new Promise((ok, no) => loader.load(u, ok, undefined, no));
+Promise.all([fetch("data.json").then((r) => r.json()), load("fly.glb"), load("brain.glb"), fetch("neurons.json").then((r) => r.json())]).then(([d, flyG, brainG, neurons]) => {
+  D = d;
+  const herModel = flyG.scene.clone(true);
+  setupFly(flyG.scene);
+  setupHer(herModel);
+  setupBrain(brainG.scene);
+  setupNeurons(neurons);
+  $("loading").classList.add("done");
+  $("pause").addEventListener("click", () => { paused = !paused; $("pause").textContent = paused ? "Play" : "Pause"; });
+  document.querySelectorAll("button.go").forEach((b) => b.addEventListener("click", () => { startTrip(b.dataset.go); if (paused) { paused = false; $("pause").textContent = "Pause"; } }));
+  shelf = shuffle([...D.perfumes]).slice(0, 12); renderShelf(0);
+  $("query").textContent = "Pick a destination on the map to open the wardrobe.";
+  setButtons();
+  status("Where should the fly go? Pick Office, Date or Gym");
+  requestAnimationFrame(loop);
+}).catch((e) => { $("loading").textContent = "Could not load the 3D assets."; console.error(e); });
+
+// males have a dark, rounded abdomen tip; females are a bit larger with a lighter, banded abdomen
+function paint(m, abdomen) {
+  m.traverse((o) => {
+    if (!o.isMesh) return;
+    o.castShadow = true;
+    const n = (o.material.name || "").toLowerCase();
+    if (n.includes("wing")) { o.material = new THREE.MeshPhysicalMaterial({ color: "#D9E4EA", transparent: true, opacity: 0.35, roughness: 0.15, iridescence: 1, iridescenceIOR: 1.6, side: THREE.DoubleSide, depthWrite: false }); o.castShadow = false; }
+    else if (n.includes("eye")) o.material = new THREE.MeshStandardMaterial({ color: "#9E1F14", roughness: 0.35, metalness: 0.1 });
+    else {
+      let p = o; while (p.parent && !/^(abdomen|thorax|head|leg|antenna|haltere)/.test(p.name)) p = p.parent;
+      o.material = new THREE.MeshStandardMaterial({ color: p.name === "abdomen" ? abdomen : p.name === "thorax" ? "#93652F" : "#A9773E", roughness: 0.55, metalness: 0.05 });
+    }
+  });
+}
+function setupHer(m) {
+  paint(m, "#B98A52");
+  m.traverse((o) => { if (o.name) herRig[o.name] = { node: o, rest: o.quaternion.clone() }; });
+  const k = FLY_SCALE * 1.12;
+  m.scale.setScalar(k); m.position.y = RIG.standY * k;
+  her.add(m);
+  const p = toW(FEMALE.x, FEMALE.y); her.position.set(p.x, 0.012, p.z);
+  her.rotation.y = -Math.PI + Math.PI / 2; // facing west, toward his landing spot
+}
+
+function setupFly(m) {
+  paint(m, "#5A3A1E");
+  m.traverse((o) => {
+    if (o.name) rig[o.name] = { node: o, rest: o.quaternion.clone() };
+  });
+  m.scale.setScalar(FLY_SCALE);
+  m.position.y = RIG.standY * FLY_SCALE; // feet on the ground at rest
+  flyPivot.add(m);
+  for (const w of ["wing_L", "wing_R"]) {
+    const r = rig[w]; if (!r) continue;
+    for (const s of [-1, 1]) {
+      const ghost = r.node.clone(true);
+      ghost.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.opacity = 0.08; o.castShadow = false; } });
+      r.node.parent.add(ghost);
+      blurs.push({ node: ghost, rest: r.rest.clone(), wing: w, side: s });
+    }
+  }
+}
+
+function setupBrain(m) {
+  m.traverse((o) => {
+    if (!o.isMesh) return;
+    const name = o.name || o.parent?.name;
+    if (name === "brain") {
+      o.material = new THREE.MeshStandardMaterial({ color: "#E9D8BC", transparent: true, opacity: 0.1, roughness: 0.6, depthWrite: false, side: THREE.DoubleSide });
+      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, 35), new THREE.LineBasicMaterial({ color: "#E9D8BC", transparent: true, opacity: 0.12 }));
+      o.add(edges);
+      o.renderOrder = 2;
+    } else {
+      const r = REGIONS.find((x) => x.nodes.includes(name)); if (!r) return;
+      o.material = new THREE.MeshStandardMaterial({ color: r.color, emissive: r.color, emissiveIntensity: 0.05, transparent: true, opacity: 0.45, roughness: 0.5 });
+      regionMeshes[name] = o;
+      o.geometry.computeBoundingBox();
+      centroid[name] = o.geometry.boundingBox.getCenter(new THREE.Vector3()).applyMatrix4(o.matrixWorld);
+    }
+  });
+  m.updateMatrixWorld(true);
+  for (const [n, o] of Object.entries(regionMeshes)) { o.geometry.computeBoundingBox(); centroid[n] = o.geometry.boundingBox.getCenter(new THREE.Vector3()).applyMatrix4(o.matrixWorld); }
+  brainScene.add(m);
+}
+
+// real skeleton points from ~200 FlyWire neurons along the smell pathway, lit by their region's activity
+let neuronPts, neuronRegion = [];
+function setupNeurons(n) {
+  const pos = [];
+  for (const [region, stages] of Object.entries(n.regions)) for (const xyz of Object.values(stages)) {
+    for (let i = 0; i < xyz.length; i += 3) { pos.push(xyz[i], xyz[i + 1], xyz[i + 2]); neuronRegion.push(region); }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute("color", new THREE.Float32BufferAttribute(new Float32Array(pos.length), 3));
+  neuronPts = new THREE.Points(g, new THREE.PointsMaterial({ size: 0.035, map: dotTex, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+  neuronRegion = neuronRegion.map((r) => ({ key: r, color: colorOf(r), jitter: Math.random() * 6.28 }));
+  brainScene.add(neuronPts);
+}
+
+// ---------- per-frame ----------
+let wingPhase = 0, spread = 0, song = 0, meterT = 0;
+function resize() {
+  for (const [r, c, cm] of [[renderer, wc, cam], [brainR, bc, brainCam]]) {
+    const w = c.clientWidth, h = c.clientHeight;
+    if (c.width !== Math.round(w * r.getPixelRatio()) || c.height !== Math.round(h * r.getPixelRatio())) { r.setSize(w, h, false); cm.aspect = w / h; cm.updateProjectionMatrix(); }
+  }
+  plumeMat.uniforms.uScale.value = wc.clientHeight * 0.9;
+}
+
+function updateWorld(t, dt) {
+  const flying = phase === "fly" || phase === "return";
+  const p = toW(fly.x, fly.y);
+  flyRoot.position.set(p.x, 0.012 + fly.alt, p.z);
+  flyRoot.rotation.y = -fly.h + Math.PI / 2; // model faces +Z; sim heading 0 = +X
+  flyPivot.rotation.z = damp(flyPivot.rotation.z, clamp(fly.turn * 0.12, -0.6, 0.6), 8, dt); // bank into turns
+  flyPivot.rotation.x = damp(flyPivot.rotation.x, flying ? 0.12 + fly.speed / 1500 : 0, 5, dt); // nose down when fast
+
+  // wings: fast stroke in flight (aliased to a readable rate), folded at rest; envelope ghosts show the stroke plane
+  const airborne = fly.alt > 0.02 || flying;
+  wingPhase += dt * (airborne ? 2 * Math.PI * 21 : 0);
+  spread = damp(spread, airborne ? 1 : 0, airborne ? 14 : 4, dt);
+  const center = RIG.wingSpread * spread, amp = RIG.wingAmp * spread;
+  for (const w of ["wing_L", "wing_R"]) pose(w, RIG.wingAxis, RIG.wingSign[w] * (center + Math.sin(wingPhase) * amp));
+  song = damp(song, phase === "arrived" && scene === "date" && timer > 0.8 ? 1 : 0, 6, dt);
+  if (song > 0.01) pose("wing_L", RIG.wingAxis, RIG.wingSign.wing_L * song * (-1.5 + Math.sin(t * 70) * 0.12)); // male courtship song: one wing extended and vibrating
+  for (const b of blurs) {
+    b.node.visible = spread > 0.5;
+    b.node.quaternion.copy(b.rest).multiply(_q.setFromAxisAngle(RIG.wingAxis, RIG.wingSign[b.wing] * (center + b.side * amp)));
+  }
+  // legs: tucked in flight, standing on the pad; front legs groom while choosing
+  const tuck = clamp(fly.alt / 0.12, 0, 1);
+  for (const side of ["L", "R"]) for (const pos of ["F", "M", "H"]) {
+    pose(`leg_${side}${pos}_femur`, RIG.legAxis, tuck * RIG.tuck);
+    pose(`leg_${side}${pos}_tibia`, RIG.legAxis, tuck * RIG.tuck * 1.2);
+  }
+  if (phase === "choose" || phase === "idle" || (phase === "arrived" && scene !== "date")) {
+    const g = Math.sin(t * 11) * 0.35;
+    pose("leg_LF_tibia", RIG.legAxis, g); pose("leg_RF_tibia", RIG.legAxis, g);
+  }
+  pose("head", RIG.headAxis, clamp(fly.turn * 0.05, -0.3, 0.3));
+  const tw = Math.sin(t * 30) * 0.12 * (fly.smellL + fly.smellR);
+  pose("antenna_L", RIG.headAxis, tw); pose("antenna_R", RIG.headAxis, -tw);
+
+  // camera: frame the whole map once per aspect ratio, then leave it to the viewer
+  if (fitted !== cam.aspect) {
+    fitted = cam.aspect;
+    const fit = Math.max(1, 1.78 / cam.aspect);
+    cam.position.copy(MAP_CENTER).add(new THREE.Vector3(-1.1, 5.4, 4.4).multiplyScalar(fit));
+  }
+  worldOrbit.update();
+
+  // her: grooms, and turns her head toward him while he sings
+  const singing = phase === "arrived" && scene === "date" && timer > 0.8;
+  const hg = Math.sin(t * 9 + 1) * 0.3;
+  pose("leg_LF_tibia", RIG.legAxis, hg, herRig); pose("leg_RF_tibia", RIG.legAxis, hg, herRig);
+  pose("head", RIG.headAxis, singing ? 0.12 * Math.sin(t * 2) : 0.2 * Math.sin(t * 0.7), herRig);
+  pose("abdomen", RIG.legAxis, singing ? 0.06 * Math.sin(t * 3) : 0, herRig);
+
+  // pads: active destination breathes
+  for (const [k, pad] of Object.entries(pads)) {
+    const on = k === scene && phase !== "return" && phase !== "idle" && phase !== "home";
+    pad.material.color.set(on ? "#8B2F2F" : "#E0D7AC");
+    pad.scale.setScalar(on ? 1 + Math.sin(t * 3) * 0.06 : 1);
+  }
+
+  // plume buffers
+  const pos = plumeGeo.attributes.position.array, fade = plumeGeo.attributes.aFade.array, size = plumeGeo.attributes.aSize.array;
+  const n = Math.min(puffs.length, MAXP);
+  for (let i = 0; i < n; i++) {
+    const q = puffs[i], w = toW(q.x, q.y);
+    pos.set([w.x, q.z, w.z], i * 3);
+    fade[i] = 0.16 * Math.min(1, q.age * 3) * (1 - q.age / 7);
+    size[i] = 0.14 + q.age * 0.11;
+  }
+  plumeGeo.setDrawRange(0, n);
+  for (const a of ["position", "aFade", "aSize"]) plumeGeo.attributes[a].needsUpdate = true;
+
+  const tp = trailGeo.attributes.position.array, sp = shadowLine.geometry.attributes.position.array;
+  trail.forEach(([x, y, a], i) => { const w = toW(x, y); tp.set([w.x, 0.012 + a, w.z], i * 3); sp.set([w.x, 0.004, w.z], i * 3); });
+  trailGeo.setDrawRange(0, trail.length); shadowLine.geometry.setDrawRange(0, trail.length);
+  trailGeo.attributes.position.needsUpdate = shadowLine.geometry.attributes.position.needsUpdate = true;
+}
+
+function updateBrain(t, dt) {
+  const flying = phase === "fly" || phase === "return";
+  const drive = {
+    AL_L: fly.smellL, AL_R: fly.smellR,
+    LH: Math.max(fly.smellL, fly.smellR) * 0.9,
+    MB: phase === "choose" ? 0.85 + 0.15 * Math.sin(t * 9) : phase === "wait" ? 0.6 : Math.max(fly.smellL, fly.smellR) * 0.4,
+    CX: flying ? clamp(0.25 + Math.abs(fly.turn) / 5, 0, 1) : 0.05,
+    OL: fly.landing && flying ? 0.9 : flying && timer < 0.8 ? 0.6 : 0.08,
+    GNG: flying ? 0.45 + 0.15 * Math.sin(wingPhase) : phase === "choose" || phase === "arrived" ? 0.35 : 0.05,
+  };
+  if (phase === "arrived" && scene === "date") { drive.GNG = 0.5 + 0.3 * Math.abs(Math.sin(t * 6)); drive.OL = 0.6; drive.CX = 0.35; drive.MB = 0.4; } // sees her, sings
+  if (phase === "wait") { drive.AL_L = drive.AL_R = 0.7 + 0.2 * Math.sin(t * 14); drive.LH = 0.5; } // the spray hits the antennae
+  for (const k in act) act[k] = damp(act[k], drive[k], drive[k] > act[k] ? 9 : 2.5, dt);
+
+  for (const [name, o] of Object.entries(regionMeshes)) {
+    const a = actOf(name);
+    o.material.emissiveIntensity = 0.04 + a * 0.85;
+    o.material.opacity = 0.22 + a * 0.38;
+  }
+  // spawn pulses along active edges
+  for (const [a, b] of EDGES) {
+    if (!centroid[a] || !centroid[b]) continue;
+    if (Math.random() < actOf(a) * dt * 14 && signals.length < MAXS) {
+      const mid = centroid[a].clone().add(centroid[b]).multiplyScalar(0.5); mid.y += 0.25;
+      signals.push({ a: centroid[a], b: centroid[b], mid, t: 0, d: 0.5 + Math.random() * 0.3, c: colorOf(a) });
+    }
+  }
+  signals = signals.filter((s) => (s.t += dt / s.d) < 1);
+  const sp = sigGeo.attributes.position.array, sc = sigGeo.attributes.color.array;
+  signals.forEach((s, i) => {
+    const u = s.t, v = 1 - u; // quadratic bezier
+    sp.set([v * v * s.a.x + 2 * v * u * s.mid.x + u * u * s.b.x, v * v * s.a.y + 2 * v * u * s.mid.y + u * u * s.b.y, v * v * s.a.z + 2 * v * u * s.mid.z + u * u * s.b.z], i * 3);
+    const f = Math.sin(Math.PI * u);
+    sc.set([s.c.r * f, s.c.g * f, s.c.b * f], i * 3);
+  });
+  sigGeo.setDrawRange(0, signals.length);
+  sigGeo.attributes.position.needsUpdate = sigGeo.attributes.color.needsUpdate = true;
+  if (neuronPts) {
+    const c = neuronPts.geometry.attributes.color.array;
+    neuronRegion.forEach((r, i) => {
+      const a = actOf(r.key), f = 0.12 + a * (0.9 + 0.5 * Math.sin(t * 12 + r.jitter)); // flicker like spikes when active
+      c[i * 3] = r.color.r * f; c[i * 3 + 1] = r.color.g * f; c[i * 3 + 2] = r.color.b * f;
+    });
+    neuronPts.geometry.attributes.color.needsUpdate = true;
+  }
+  if (!dragging && !still && t - idleAt > 3) {
+    const az = 0.55 * Math.sin(t * 0.22), el = 0.15 + 0.08 * Math.sin(t * 0.17), r = 3.3;
+    brainCam.position.set(damp(brainCam.position.x, r * Math.sin(az) * Math.cos(el), 1.5, dt), damp(brainCam.position.y, r * Math.sin(el), 1.5, dt), damp(brainCam.position.z, r * Math.cos(az) * Math.cos(el), 1.5, dt));
+  }
+  orbit.update();
+
+  if ((meterT += dt) > 1 / 15) {
+    meterT = 0;
+    const show = { AL: Math.max(act.AL_L, act.AL_R), LH: act.LH, MB: act.MB, CX: act.CX, OL: act.OL, GNG: act.GNG };
+    for (const k in show) $("m-" + k).style.transform = `scaleX(${show[k].toFixed(3)})`;
+  }
+}
+
+const visible = { world: true, brain: true };
+const io = new IntersectionObserver((es) => es.forEach((e) => { visible[e.target === wc ? "world" : "brain"] = e.isIntersecting; }));
+io.observe(wc); io.observe(bc);
+
+let prev = 0;
+function loop(ms) {
+  const t = ms / 1000, dt = Math.min(0.05, t - prev || 0);
+  prev = t;
+  resize();
+  if (!paused) step(dt);
+  const sdt = paused ? 0 : dt;
+  updateWorld(t, sdt || 0.0001);
+  if (visible.world) renderer.render(world, cam);
+  updateBrain(t, sdt || 0.0001);
+  if (visible.brain) brainR.render(brainScene, brainCam);
+  requestAnimationFrame(loop);
+}
+window.__fly = { get phase() { return phase; }, fly, PLACES, ORDER, startFlight, flyStep, newShelf, choose, last, set timer(v) { timer = v; }, get timer() { return timer; }, set paused(v) { paused = v; }, get puffs() { return puffs; } };
+</script>
+</body>
+</html>
