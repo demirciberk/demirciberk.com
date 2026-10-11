@@ -43,6 +43,11 @@
   button.go { font-weight: 500; }
   button.go:disabled { opacity: 0.45; cursor: default; transform: none; border-color: var(--line); }
   button.go[aria-pressed="true"] { opacity: 1; background: var(--accent); border-color: var(--accent); color: #FFF6DE; }
+  .whead { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 0 0 4px; }
+  .whead h2 { margin: 0; }
+  .seg { display: flex; gap: 6px; }
+  .seg button { font-size: 0.75rem; padding: 3px 12px; }
+  .seg button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #FFF6DE; }
   .loading { position: absolute; inset: 0; display: grid; place-items: center; font: 500 0.75rem var(--mono); color: var(--muted); transition: opacity .4s; }
   .loading.done { opacity: 0; pointer-events: none; }
 
@@ -158,11 +163,11 @@
   <header class="top">
     <div><a class="back" href="../../index.html#projects">&larr; Back to projects</a><p class="label">koku &middot; fly wardrobe</p></div>
     <h1>A fly with a perfume habit</h1>
-    <p class="lede">Before every trip the fly gets a freshly shuffled wardrobe of twelve perfumes. The koku retriever scores each bottle against Turkish queries for where it is going (office, date, gym, night club), the fly sprays one of the bottles that fit, then tracks the odor plume there while its brain lights up.</p>
+    <p class="lede">Before every trip the fly gets a freshly shuffled wardrobe of twelve perfumes. The koku retriever scores each bottle against Turkish queries for where it is going (office, date, gym, night club, university, shopping mall), the fly sprays one of the bottles that fit, then tracks the odor plume there while its brain lights up.</p>
   </header>
 
   <div class="world">
-    <canvas id="world" aria-label="3D map: a fruit fly flies from home to the office, a restaurant, a gym and a night club"></canvas>
+    <canvas id="world" aria-label="3D map: a fruit fly flies from home to the office, a restaurant, a gym, a night club, a university and a shopping mall"></canvas>
     <div class="hud">
       <p class="chip" id="status" aria-live="polite"><span class="dot"></span>Loading…</p>
       <div class="controls">
@@ -170,6 +175,8 @@
         <button class="go" data-go="date" type="button">Date</button>
         <button class="go" data-go="gym" type="button">Gym</button>
         <button class="go" data-go="club" type="button">Night club</button>
+        <button class="go" data-go="uni" type="button">University</button>
+        <button class="go" data-go="mall" type="button">Mall</button>
         <button id="pause" type="button">Pause</button>
       </div>
     </div>
@@ -184,14 +191,17 @@
       <ul class="regions" id="regions"></ul>
     </section>
     <section class="panel">
-      <h2 id="scene">Wardrobe</h2>
+      <div class="whead">
+        <h2 id="scene">Wardrobe</h2>
+        <div class="seg" role="group" aria-label="Wardrobe"><button type="button" data-g="erkek" aria-pressed="true">Men's</button><button type="button" data-g="kadın" aria-pressed="false">Women's</button></div>
+      </div>
       <p class="query" id="query" lang="tr"></p>
       <div class="cabinet" id="cabinet"><ul class="shelf" id="shelf" lang="tr"></ul></div>
       <p class="pick-desc" id="pick" lang="tr"></p>
     </section>
   </div>
 
-  <p class="note">How picks stay sensible: a perfume counts as a fit for a place only if the fine-tuned BGE-M3 ranks it in the top 10% of the pool for that place's queries <em>and</em> its accords pass a simple rule (nothing heavy at the gym, nothing sharp and cold on a date, nothing fresh and quiet at the club). Each wardrobe holds three fits and nine others; the fly samples among the fits, weighted by score. All scores were computed offline. The flight is a hand-written plume-tracking loop (surge upwind while in the odor, cast crosswind when it is lost, land by sight up close), the behavior real flies show. The brain glow is an illustrative mapping of that behavior onto the regions known to handle it (antennal lobes for smell, lateral horn and mushroom body for innate and learned odor value, central complex for steering, optic lobes for landing), not a simulation of the <a href="https://hms.harvard.edu/news/researchers-publish-first-complete-connectome-fruit-fly-brain-spinal-cord">fruit fly connectome</a>. 3D fly: <a href="https://github.com/NeLy-EPFL/flygym">NeuroMechFly (flygym)</a>, NeLy lab, EPFL, from a micro-CT scan of an adult <i>Drosophila</i>; Apache-2.0, simplified and re-rigged. Brain: FlyWire connectome of the adult female <i>Drosophila</i> brain (FAFB; FlyWire Consortium, Princeton), CC BY-NC 4.0; Dorkenwald et al. 2024 and Schlegel et al. 2024, <i>Nature</i> 634; neuropil meshes after Ito et al. 2014 (JFRC2); neuron skeletons from the public FAFB CATMAID. Perfume data: Fragrantica dataset on Kaggle (CC BY-NC-SA 4.0). Code: <a href="https://github.com/demirciberk/koku">github.com/demirciberk/koku</a>.</p>
+  <p class="note">How picks stay sensible: a perfume counts as a fit for a place only if the fine-tuned BGE-M3 ranks it in the top 10% of its group (men's, women's or unisex) for that place's queries <em>and</em> its accords pass a simple rule (nothing heavy at the gym, nothing sharp and cold on a date, nothing fresh and quiet at the club, nothing heavy in class or in a crowded mall). Each wardrobe holds men's or women's perfumes (per the toggle) plus unisex: three fits and nine others; the fly samples among the fits, weighted by score. All scores were computed offline. The flight is a hand-written plume-tracking loop (surge upwind while in the odor, cast crosswind when it is lost, land by sight up close), the behavior real flies show. The brain glow is an illustrative mapping of that behavior onto the regions known to handle it (antennal lobes for smell, lateral horn and mushroom body for innate and learned odor value, central complex for steering, optic lobes for landing), not a simulation of the <a href="https://hms.harvard.edu/news/researchers-publish-first-complete-connectome-fruit-fly-brain-spinal-cord">fruit fly connectome</a>. 3D fly: <a href="https://github.com/NeLy-EPFL/flygym">NeuroMechFly (flygym)</a>, NeLy lab, EPFL, from a micro-CT scan of an adult <i>Drosophila</i>; Apache-2.0, simplified and re-rigged. Brain: FlyWire connectome of the adult female <i>Drosophila</i> brain (FAFB; FlyWire Consortium, Princeton), CC BY-NC 4.0; Dorkenwald et al. 2024 and Schlegel et al. 2024, <i>Nature</i> 634; neuropil meshes after Ito et al. 2014 (JFRC2); neuron skeletons from the public FAFB CATMAID. Perfume data: Fragrantica dataset on Kaggle (CC BY-NC-SA 4.0). Code: <a href="https://github.com/demirciberk/koku">github.com/demirciberk/koku</a>.</p>
 </main>
 <script type="module">
 import * as THREE from "three";
@@ -217,25 +227,29 @@ const PLACES = {
   date: { x: 610, y: 400, name: "Restaurant" },
   gym: { x: 330, y: 420, name: "Gym" },
   club: { x: 330, y: 85, name: "Night club" },
+  uni: { x: 490, y: 250, name: "University" },
+  mall: { x: 140, y: 85, name: "Mall" },
 };
-const ORDER = ["office", "date", "gym", "club"];
+const ORDER = ["office", "date", "gym", "club", "uni", "mall"];
 const FEMALE = { x: 640, y: 400 }; // she waits at the restaurant; he lands across the table from her
 const LAND = { date: { x: 580, y: 400 } };
 const FRESH = ["narenciye", "ferah", "sulu", "yeşil", "aromatik", "ferah baharatlı", "ozonlu", "deniz"];
 const SWEET = ["tatlı", "vanilyalı", "amber", "sıcak baharatlı", "ballı", "kahveli", "çikolatalı", "karamelli"];
 const tint = (p) => p.a.some((a) => SWEET.includes(a)) ? "#B5653A" : p.a.some((a) => FRESH.includes(a)) ? "#4E8C96" : "#8C7350";
 
-let D, sceneIdx = -1, scene, shelf, pick, last = {};
+let D, sceneIdx = -1, scene, shelf, pick, last = {}, gender = "erkek";
 let paused = false, phase = "idle", timer = 0;
 const fly = { x: PLACES.home.x, y: PLACES.home.y, h: 0, cast: 1, lost: 0, turn: 0, smellL: 0, smellR: 0, alt: 0, speed: 0 };
 let target = null, wind = { x: 0, y: 0 }, puffs = [], trail = [];
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-// Wardrobe: 3 fits + 9 non-fits for this scene. Pick: softmax over fits' scores, never the previous pick here.
+// Wardrobe: men's or women's perfumes plus unisex, never both.
+const pool = () => D.perfumes.filter((p) => p.g === gender || p.g === "unisex");
+// 3 fits + 9 non-fits for this scene. Pick: softmax over fits' scores, never the previous pick here.
 function newShelf(j) {
-  const fits = D.perfumes.filter((p) => p.f[j] && p.id !== last[j]);
-  const rest = D.perfumes.filter((p) => !p.f[j]);
+  const fits = pool().filter((p) => p.f[j] && p.id !== last[j]);
+  const rest = pool().filter((p) => !p.f[j]);
   return shuffle([...shuffle(fits).slice(0, 3), ...shuffle(rest).slice(0, 9)]);
 }
 function choose(items, j, T = 0.01) {
@@ -261,7 +275,7 @@ function reveal() {
     el.classList.toggle("fit", !!shelf[i].f[j]);
     el.classList.toggle("pick", shelf[i] === pick);
   });
-  $("pick").innerHTML = `<b>${esc(pick.n)}</b> · ${esc(pick.b)}<span class="acc">${esc(pick.a.join(", "))}</span><br>${esc(pick.d)}`;
+  $("pick").innerHTML = `<b>${esc(pick.n)}</b> · ${esc(pick.b)}<span class="acc">${esc(pick.g)} · ${esc(pick.a.join(", "))}</span><br>${esc(pick.d)}`;
 }
 
 function setButtons() {
@@ -454,6 +468,16 @@ function building(key) {
     const ball = new THREE.Mesh(new THREE.IcosahedronGeometry(0.06, 1), mat("#E6E6EE", { metalness: 0.9, roughness: 0.2, flatShading: true }));
     ball.position.set(0, 0.62, 0.1); ball.castShadow = true; g.add(ball); clubBall = ball;
     clubLight.position.set(0, 0.3, 0.62); g.add(clubLight);
+  } else if (key === "uni") {
+    g.add(box(0.9, 0.42, 0.5, cream));
+    const step = box(0.6, 0.04, 0.12, cream); step.position.z = 0.3; g.add(step);
+    for (let i = 0; i < 4; i++) { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.36, 10), cream); c.position.set(-0.24 + i * 0.16, 0.22, 0.3); c.castShadow = true; g.add(c); }
+    const roof = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.66, 3), acc); roof.rotation.set(Math.PI / 2, 0, Math.PI / 2); roof.scale.x = 0.55; roof.position.set(0, 0.46, 0.2); roof.castShadow = true; g.add(roof);
+  } else if (key === "mall") {
+    g.add(box(0.95, 0.36, 0.55, cream));
+    const glass = box(0.8, 0.18, 0.01, mat("#9DB7C0", { emissive: "#9DB7C0", emissiveIntensity: 0.25 })); glass.position.set(0, 0.03, 0.28); g.add(glass);
+    ["#8B2F2F", "#2F6B3A", "#C08A2E", "#4E8C96"].forEach((c, i) => { const aw = box(0.19, 0.03, 0.14, mat(c)); aw.position.set(-0.3 + i * 0.2, 0.24, 0.33); aw.rotation.x = 0.3; g.add(aw); });
+    const sign = box(0.4, 0.08, 0.02, acc); sign.position.set(0, 0.3, 0.28); g.add(sign);
   } else if (key === "gym") {
     g.add(box(0.85, 0.4, 0.6, cream));
     const stripe = box(0.86, 0.06, 0.61, mat("#2F6B3A")); stripe.position.y = 0.3; g.add(stripe);
@@ -478,7 +502,7 @@ for (const [k, p] of Object.entries(PLACES)) {
 const roadMat = mat("#E9DBA4", { roughness: 1 });
 const roads = ORDER.map((k, i) => {
   const a = toW(PLACES.home.x, PLACES.home.y), b = toW(PLACES[k].x, PLACES[k].y);
-  const mid = a.clone().lerp(b, 0.5).add(new THREE.Vector3(0, 0, [-0.5, -0.4, 0.35, -0.3][i]));
+  const mid = a.clone().lerp(b, 0.5).add(new THREE.Vector3(0, 0, [-0.5, -0.4, 0.35, -0.3, 0.2, 0][i]));
   const curve = new THREE.QuadraticBezierCurve3(a, mid, b);
   const road = new THREE.Mesh(new THREE.TubeGeometry(curve, 64, 0.07, 6), roadMat);
   road.scale.y = 0.04; road.position.y = 0.001; road.receiveShadow = true; world.add(road);
@@ -621,10 +645,15 @@ Promise.all([fetch("data.json").then((r) => r.json()), load("fly.glb"), load("br
   $("loading").classList.add("done");
   $("pause").addEventListener("click", () => { paused = !paused; $("pause").textContent = paused ? "Play" : "Pause"; });
   document.querySelectorAll("button.go").forEach((b) => b.addEventListener("click", () => { startTrip(b.dataset.go); if (paused) { paused = false; $("pause").textContent = "Pause"; } }));
-  shelf = shuffle([...D.perfumes]).slice(0, 12); renderShelf(0);
+  shelf = shuffle(pool()).slice(0, 12); renderShelf(0);
+  document.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => {
+    gender = b.dataset.g;
+    document.querySelectorAll(".seg button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    if (phase === "idle") { shelf = shuffle(pool()).slice(0, 12); renderShelf(Math.max(sceneIdx, 0)); $("pick").innerHTML = ""; } // mid-trip: applies from the next trip
+  }));
   $("query").textContent = "Pick a destination on the map to open the wardrobe.";
   setButtons();
-  status("Where should the fly go? Pick Office, Date, Gym or Night club");
+  status("Where should the fly go? Pick Office, Date, Gym, Night club, University or Mall");
   requestAnimationFrame(loop);
 }).catch((e) => { $("loading").textContent = "Could not load the 3D assets."; console.error(e); });
 
