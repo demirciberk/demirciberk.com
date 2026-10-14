@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Showreel</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=block">
+<style>
+  :root {
+    --bg: #FFFFFF; --surface: #F5F6FA; --ink: #0B0B0F; --muted: #4A4A55; --line-soft: #E3E4EA;
+    --cobalt: #2D5BFF; --lime: #D4FF3A; --pink: #FF3D7F;
+    --sans: "Geist", sans-serif; --display: "Bricolage Grotesque", "Geist", sans-serif; --mono: "JetBrains Mono", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); color: var(--ink); }
+  body { font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  #stage { position: absolute; inset: 0; overflow: hidden; }
+  .scene { position: absolute; inset: 0; opacity: 0; }
+  .abs { position: absolute; }
+  .label { font-family: var(--mono); font-size: 22px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--cobalt); }
+  .mono { font-family: var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+  .serif { font-family: var(--display); font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+  .ch { display: inline-block; will-change: transform; }
+  .mask { display: inline-block; overflow: hidden; vertical-align: bottom; padding: 0 .05em .16em 0; margin: 0 -.05em -.08em 0; }
+  .swash { position: absolute; left: 0; right: 0; height: .34em; bottom: .14em; background: var(--lime); transform-origin: left; z-index: -1; }
+  .rel { position: relative; display: inline-block; z-index: 0; }
+  .vline { position: absolute; top: 0; width: 1px; height: 1080px; background: var(--line-soft); transform-origin: top; }
+  .glow { position: absolute; border-radius: 50%; }
+  .dot { position: absolute; width: 18px; height: 18px; border-radius: 50%; margin: -9px 0 0 -9px; border: 2px solid var(--ink); }
+  .pill { display: inline-block; font-family: var(--mono); font-size: 20px; letter-spacing: .1em; text-transform: uppercase; font-weight: 500; color: var(--ink); background: var(--lime); border: 2px solid var(--ink); border-radius: 999px; padding: 6px 20px; margin-right: 12px; }
+  .node { position: absolute; background: #fff; border: 2px solid var(--ink); border-radius: 12px; padding: 26px 30px; width: 360px; box-shadow: 8px 8px 0 var(--pink); }
+  .node:nth-child(2) { box-shadow: 8px 8px 0 var(--cobalt); }
+  .node:nth-child(3) { box-shadow: 8px 8px 0 var(--lime); }
+  .node b { display: block; font-family: var(--display); font-weight: 800; letter-spacing: -.03em; font-size: 46px; line-height: 1; margin-bottom: 10px; }
+  .node span { font-family: var(--mono); font-size: 17px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .crop { position: absolute; overflow: hidden; border-radius: 10px; border: 2px solid var(--ink); background: var(--surface); box-shadow: 8px 8px 0 var(--pink); }
+  .crop img { position: absolute; max-width: none; }
+  .marquee { position: absolute; left: 0; white-space: nowrap; font-family: var(--mono); font-size: 26px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .marquee i { font-style: normal; color: var(--cobalt); margin: 0 26px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="glow" id="glowA" style="width:760px;height:760px;background:var(--surface)"></div>
+  <div class="glow" id="glowB" style="width:560px;height:560px;background:#EEF2FF"></div>
+  <div id="lines"></div>
+
+  <!-- 1: name -->
+  <section class="scene" id="s1">
+    <p class="label abs" id="s1label" style="left:180px;top:300px"></p>
+    <h1 class="serif abs" id="s1name" style="left:172px;top:350px;font-size:250px"></h1>
+    <p class="abs" id="s1lede" style="left:180px;top:680px;font-size:38px;max-width:1200px;line-height:1.4">Final-year Computer Engineering student at TED University.<br><span style="color:var(--muted)">Machine Learning, NLP, AI agents and fine-tuning.</span></p>
+    <p class="mono abs" id="s1loc" style="left:180px;top:830px;font-size:20px;color:var(--muted)">Ankara, Turkiye</p>
+  </section>
+
+  <!-- 2: messy data -->
+  <section class="scene" id="s2">
+    <p class="label abs" style="left:180px;top:330px">01 / About</p>
+    <h2 class="serif abs" id="s2head" style="left:176px;top:390px;font-size:76px;line-height:1.12;white-space:nowrap"></h2>
+    <div id="dots"></div>
+    <p class="mono abs" id="s2cap" style="left:1130px;top:860px;font-size:18px;color:var(--muted)">retrieval &middot; fine-tuning &middot; agents</p>
+  </section>
+
+  <!-- 3: experience -->
+  <section class="scene" id="s3">
+    <p class="label abs" style="left:180px;top:150px">02 / Experience</p>
+    <h2 class="serif abs" id="s3head" style="left:176px;top:200px;font-size:96px"></h2>
+    <div class="abs" id="s3rail" style="left:181px;top:390px;width:3px;height:560px;background:var(--ink);transform-origin:top"></div>
+    <div id="jobs"></div>
+  </section>
+
+  <!-- 4: koku -->
+  <section class="scene" id="s4">
+    <p class="label abs" style="left:180px;top:150px">03 / Projects &mdash; featured</p>
+    <h2 class="serif abs" id="s4head" style="left:172px;top:190px;font-size:190px"></h2>
+    <p class="abs" id="s4sub" style="left:180px;top:420px;font-size:36px;color:var(--muted)">Turkish perfume search, distilled.</p>
+    <svg class="abs" id="s4svg" style="left:0;top:0" width="1920" height="1080"></svg>
+    <div id="nodes"></div>
+    <div class="abs" id="metric" style="left:1180px;top:240px;width:560px">
+      <p class="mono" style="font-size:20px;color:var(--muted)">nDCG@10 &middot; 183 Turkish queries</p>
+      <p class="serif" id="metricNum" style="font-size:230px;margin-top:10px">0.18</p>
+      <div style="position:relative;height:26px;background:var(--surface);border:2px solid var(--ink);border-radius:13px;margin-top:20px;overflow:hidden;box-shadow:5px 5px 0 var(--pink)">
+        <div id="metricBar" style="position:absolute;left:0;top:0;bottom:0;width:100%;background:var(--cobalt);transform-origin:left;border-radius:11px"></div>
+      </div>
+      <p class="mono" style="font-size:18px;color:var(--muted);margin-top:14px;display:flex;justify-content:space-between"><span>0</span><span>1.0</span></p>
+    </div>
+  </section>
+
+  <!-- 4b: fly wardrobe (real footage of demo/fly) -->
+  <section class="scene" id="sf">
+    <p class="label abs" style="left:180px;top:120px">koku &middot; fly wardrobe</p>
+    <h2 class="serif abs" id="sfhead" style="left:176px;top:160px;font-size:88px"></h2>
+    <div class="crop" id="cropMap" style="left:180px;top:318px;width:1030px;height:647px"><img id="fMap" style="left:-197px;top:-254px;width:2079px"></div>
+    <div class="crop" id="cropBr" style="left:1230px;top:318px;width:522px;height:294px;background:#0B0B0F;box-shadow:8px 8px 0 var(--cobalt)"><img id="fBr" style="left:-1073px;top:-115px;width:1776px"></div>
+    <div class="crop" id="cropWr" style="left:1230px;top:628px;width:522px;height:337px;background:#3A2A1E;box-shadow:8px 8px 0 var(--lime)"><img id="fWr" style="left:-1073px;top:-540px;width:1776px"></div>
+  </section>
+
+  <!-- 5: project cycle -->
+  <section class="scene" id="s5">
+    <p class="label abs" style="left:180px;top:250px">Selected work</p>
+    <div id="cycle"></div>
+    <div class="abs" id="s5count" style="right:180px;top:250px;font-family:var(--mono);font-size:22px;color:var(--muted)"></div>
+    <div class="marquee" id="mq1" style="top:850px"></div>
+    <div class="marquee" id="mq2" style="top:910px"></div>
+  </section>
+
+  <!-- 6: outro -->
+  <section class="scene" id="s6">
+    <p class="label abs" id="s6label" style="left:0;right:0;top:330px;text-align:center">Let's build something</p>
+    <h2 class="serif abs" id="s6url" style="left:0;right:0;top:390px;text-align:center;font-size:170px"></h2>
+    <p class="mono abs" id="s6links" style="left:0;right:0;top:700px;text-align:center;font-size:24px;color:var(--ink)">GitHub &nbsp;&middot;&nbsp; LinkedIn &nbsp;&middot;&nbsp; demirciberk.db@gmail.com</p>
+  </section>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const outExpo = x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x);
+const inOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const outBack = x => { const c = 1.4; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const lerp = (a, b, x) => a + (b - a) * x;
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+// split text into masked rising chars; returns spans
+function split(el, text, cls = '') {
+  const out = [];
+  text.split(' ').forEach((word, wi, arr) => {
+    const m = document.createElement('span'); m.className = 'mask ' + cls;
+    [...word].forEach(c => { const s = document.createElement('span'); s.className = 'ch'; s.textContent = c; m.appendChild(s); out.push(s); });
+    el.appendChild(m);
+    if (wi < arr.length - 1) el.appendChild(document.createTextNode(' '));
+  });
+  return out;
+}
+function rise(chars, t, start, stagger = .035, dur = .9) {
+  chars.forEach((c, i) => {
+    const p = outExpo(prog(t, start + i * stagger, start + i * stagger + dur));
+    c.style.transform = `translateY(${(1 - p) * 110}%)`;
+  });
+}
+// scene opacity/offset envelope: fade in at a, out at b
+function env(el, t, a, b, inD = .01, outD = .6) {
+  const vis = t >= a && t < b + .001;
+  const out = inOut(prog(t, b - outD, b));
+  el.style.opacity = vis ? (1 - out) * prog(t, a, a + inD) : 0;
+  el.style.transform = `translateY(${-out * 60}px)`;
+}
+
+// ---- static build ----
+const lines = $('lines');
+const vls = [180, 520, 860, 1200, 1540].map(x => { const d = document.createElement('div'); d.className = 'vline'; d.style.left = x + 'px'; lines.appendChild(d); return d; });
+
+// s1
+const s1label = 'AI & Machine Learning';
+const nameEl = $('s1name');
+const berk = split(nameEl, 'Berk');
+nameEl.appendChild(document.createTextNode(' '));
+const dem = document.createElement('span'); dem.className = 'rel'; nameEl.appendChild(dem);
+const demC = split(dem, 'Demirci');
+const sw1 = document.createElement('span'); sw1.className = 'swash'; dem.appendChild(sw1);
+
+// s2
+const s2h = $('s2head');
+const s2a = split(s2h, 'Building systems that make');
+s2h.appendChild(document.createElement('br'));
+const s2b = split(s2h, 'messy data');
+s2h.appendChild(document.createTextNode(' '));
+const useful = document.createElement('span'); useful.className = 'rel'; s2h.appendChild(useful);
+const s2c = split(useful, 'useful.');
+const sw2 = document.createElement('span'); sw2.className = 'swash'; useful.appendChild(sw2);
+const dotsEl = $('dots'), DOTS = [];
+const cols = ['var(--cobalt)', 'var(--lime)', 'var(--pink)', 'var(--ink)'];
+for (let r = 0; r < 9; r++) for (let c = 0; c < 12; c++) {
+  const d = document.createElement('div'); d.className = 'dot';
+  const k = (r * 3 + c) % 4; d.style.background = cols[c < 3 ? 0 : c < 6 ? 1 : c < 9 ? 2 : 3];
+  dotsEl.appendChild(d);
+  DOTS.push({ el: d, sx: 1000 + rnd() * 760, sy: 160 + rnd() * 760, ph: rnd() * 6.28, sp: .6 + rnd(),
+    gx: 1140 + c * 50, gy: 330 + r * 50, delay: (c + r) * .025 });
+}
+
+// s3
+const s3h = split($('s3head'), 'Where I have worked.');
+const JOBS = [
+  ['AI Intern', 'Enocta', 'Aug — Sep 2026', 'Fine-tuning & agent harnesses for local LLMs'],
+  ['AI Intern', 'OBSS', 'Jul — Aug 2026', 'AI apps · 1st place, internship competition'],
+  ['Intern', 'Aselsan', 'Jun — Jul 2026', 'Benchmarked & improved a local AI model'],
+  ['Intern', 'Pulsar Robotik', 'Jul — Aug 2025', 'Vision-language-action robot-arm automation'],
+].map((j, i) => {
+  const row = document.createElement('div'); row.className = 'abs';
+  row.style.cssText = `left:240px;top:${410 + i * 140}px;width:1500px`;
+  row.innerHTML = `<div class="dot" style="position:absolute;left:-57px;top:28px;background:var(--cobalt)"></div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline">
+      <span style="font-family:var(--display);font-size:46px;font-weight:800;letter-spacing:-.03em">${j[1]} <span style="color:var(--muted);font-weight:700">/ ${j[0]}</span></span>
+      <span class="mono" style="font-size:20px;color:var(--muted)">${j[2]}</span></div>
+    <p style="font-size:26px;color:var(--muted);margin-top:6px">${j[3]}</p>`;
+  $('jobs').appendChild(row); return row;
+});
+
+// s4
+const s4h = split($('s4head'), 'koku');
+const NODES = [['8B', 'teacher · synthetic data'], ['0.6B', 'student · distilled'], ['Retriever', 'fine-tuned']].map((n, i) => {
+  const d = document.createElement('div'); d.className = 'node';
+  d.style.left = 180 + i * 0 + 'px'; d.style.top = 540 + i * 0 + 'px';
+  d.innerHTML = `<b>${n[0]}</b><span>${n[1]}</span>`; $('nodes').appendChild(d); return d;
+});
+const NODE_POS = [[180, 560], [600, 560], [390, 790]];
+NODES.forEach((d, i) => { d.style.left = NODE_POS[i][0] + 'px'; d.style.top = NODE_POS[i][1] + 'px'; });
+const svg = $('s4svg');
+const mkPath = dpath => { const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  p.setAttribute('d', dpath); p.setAttribute('fill', 'none'); p.setAttribute('stroke', '#2D5BFF'); p.setAttribute('stroke-width', '3.5');
+  svg.appendChild(p); const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p._L = L; return p; };
+const P1 = mkPath('M540 620 L600 620'), P2 = mkPath('M780 692 C780 760 760 800 750 830');
+
+// s4b fly wardrobe: frames captured from demo/fly by capture.js
+const sfh = split($('sfhead'), 'A fly with a perfume habit.');
+let pend = [];
+const frame = (img, dir, time, n) => {
+  const src = `${dir}/${String(clamp(Math.round(time * 30) + 1, 13, n)).padStart(4, '0')}.jpg`;
+  if (img.dataset.src === src) return;
+  img.dataset.src = src; img.src = src; pend.push(img.decode().catch(() => {}));
+};
+
+// s5
+const PROJ = [
+  ['UniBot', 'RAG over a university site', ['RAG', 'LLM', 'Python']],
+  ['CV Sender', 'Resume to tailored outreach', ['LLM', 'Scraping', 'Automation']],
+  ['Medical Expense', 'Self-retraining ML service', ['MLOps', 'scikit-learn']],
+  ['DunGen AI', 'AI tabletop RPG app', ['Mobile', 'React Native']],
+  ['Air Quality', 'AQI from weather & pollutants', ['Time Series', 'ML']],
+  ['Open Source', 'PRs to Cluely, World Monitor, GitNexus', ['Open Source']],
+].map(p => {
+  const w = document.createElement('div'); w.className = 'abs'; w.style.cssText = 'left:180px;top:300px;width:1560px';
+  const h = document.createElement('h2'); h.className = 'serif'; h.style.fontSize = '180px';
+  const chars = split(h, p[0]);
+  w.appendChild(h);
+  w.insertAdjacentHTML('beforeend', `<p style="font-size:36px;color:var(--muted);margin:18px 0 26px">${p[1]}</p><div>${p[2].map(x => `<span class="pill">${x}</span>`).join('')}</div>`);
+  $('cycle').appendChild(w); return { w, chars };
+});
+const stack1 = ['PyTorch', 'Hugging Face', 'LangGraph', 'RAG', 'MCP', 'scikit-learn', 'LangChain', 'pandas'];
+const stack2 = ['Python', 'SQL', 'Fine-tuning', 'Distillation', 'Agents', 'OpenAI API', 'Retrieval', 'Java'];
+const mqHTML = a => Array(4).fill(a.map(x => x + '<i>/</i>').join('')).join('');
+$('mq1').innerHTML = mqHTML(stack1); $('mq2').innerHTML = mqHTML(stack2);
+
+// s6
+const urlEl = $('s6url');
+const urlWrap = document.createElement('span'); urlWrap.className = 'rel'; urlEl.appendChild(urlWrap);
+const urlC = split(urlWrap, 'demirciberk.com');
+const sw6 = document.createElement('span'); sw6.className = 'swash'; urlWrap.appendChild(sw6);
+
+// ---- timeline ----
+const DURATION = 30;
+window.DURATION = DURATION;
+window.seek = function (t) {
+  pend = [];
+  // ambient
+  $('glowA').style.transform = `translate(${lerp(300, 1100, (Math.sin(t * .25) + 1) / 2)}px, ${lerp(-200, 300, (Math.cos(t * .19) + 1) / 2)}px)`;
+  $('glowB').style.transform = `translate(${lerp(1300, 500, (Math.sin(t * .21 + 1) + 1) / 2)}px, ${lerp(500, 700, (Math.cos(t * .3) + 1) / 2)}px)`;
+  vls.forEach((v, i) => {
+    const pin = outExpo(prog(t, .05 + i * .08, 1.4 + i * .08));
+    const pout = inOut(prog(t, 28.4 + i * .06, 29.4 + i * .06));
+    v.style.transform = `scaleY(${pin})`; v.style.opacity = .7 * (1 - pout);
+  });
+
+  // S1 0 - 4.6
+  env($('s1'), t, 0, 4.6);
+  const nl = Math.floor(clamp((t - .3) / .035, 0, s1label.length));
+  $('s1label').textContent = s1label.slice(0, nl) + (t < 1.6 && Math.floor(t * 3) % 2 === 0 ? '_' : '');
+  rise(berk, t, .45); rise(demC, t, .62);
+  sw1.style.transform = `scaleX(${outExpo(prog(t, 1.35, 2.2))})`;
+  [$('s1lede'), $('s1loc')].forEach((e, i) => { const p = outExpo(prog(t, 1.9 + i * .25, 2.9 + i * .25)); e.style.opacity = p; e.style.transform = `translateY(${(1 - p) * 24}px)`; });
+
+  // S2 4.6 - 9.4
+  env($('s2'), t, 4.6, 9.4);
+  rise(s2a, t, 4.7, .018); rise(s2b, t, 5.05, .025); rise(s2c, t, 5.3, .03);
+  sw2.style.transform = `scaleX(${outExpo(prog(t, 6.9, 7.7))})`;
+  DOTS.forEach(d => {
+    const appear = outBack(prog(t, 4.75 + d.delay * .6, 5.25 + d.delay * .6));
+    const ord = inOut(prog(t, 6.2 + d.delay, 7.5 + d.delay));
+    const jx = Math.sin(t * d.sp * 2 + d.ph) * 18 * (1 - ord), jy = Math.cos(t * d.sp * 1.7 + d.ph) * 18 * (1 - ord);
+    d.el.style.left = lerp(d.sx, d.gx, ord) + jx + 'px';
+    d.el.style.top = lerp(d.sy, d.gy, ord) + jy + 'px';
+    d.el.style.transform = `scale(${appear * lerp(1, .85, ord)})`;
+    d.el.style.borderRadius = lerp(50, 22, ord) + '%';
+  });
+  const cap = outExpo(prog(t, 7.6, 8.4)); $('s2cap').style.opacity = cap;
+
+  // S3 9.4 - 14.6
+  env($('s3'), t, 9.4, 14.6);
+  rise(s3h, t, 9.45, .025);
+  $('s3rail').style.transform = `scaleY(${outExpo(prog(t, 9.8, 11.6))})`;
+  JOBS.forEach((r, i) => { const p = outExpo(prog(t, 10.1 + i * .32, 11.1 + i * .32)); r.style.opacity = p; r.style.transform = `translateX(${(1 - p) * 80}px)`; });
+
+  // S4 14.6 - 20.4
+  env($('s4'), t, 14.6, 20.4);
+  rise(s4h, t, 14.65, .06);
+  { const p = outExpo(prog(t, 15.1, 16)); $('s4sub').style.opacity = p; $('s4sub').style.transform = `translateY(${(1 - p) * 20}px)`; }
+  NODES.forEach((n, i) => { const p = outBack(prog(t, 15.5 + i * .55, 16.1 + i * .55)); n.style.opacity = clamp(p * 1.5); n.style.transform = `scale(${lerp(.85, 1, p)})`; });
+  P1.style.strokeDashoffset = P1._L * (1 - inOut(prog(t, 15.85, 16.15)));
+  P2.style.strokeDashoffset = P2._L * (1 - inOut(prog(t, 16.4, 16.7)));
+  { const mp = outExpo(prog(t, 15.4, 16.2)); $('metric').style.opacity = mp; $('metric').style.transform = `translateY(${(1 - mp) * 30}px)`;
+    const v = lerp(.18, .48, inOut(prog(t, 17.1, 18.6)));
+    $('metricNum').textContent = v.toFixed(2);
+    $('metricBar').style.transform = `scaleX(${v * outExpo(prog(t, 15.7, 16.5))})`;
+    $('metricNum').style.color = t > 18.6 ? 'var(--cobalt)' : 'var(--ink)'; }
+
+  // S4b fly wardrobe 20.4 - 23.4: footage 2.0s -> 7.4s at 1.8x (pick reveal, spray, flight)
+  env($('sf'), t, 20.4, 23.4, .01, .45);
+  rise(sfh, t, 20.42, .02, .7);
+  [$('cropMap'), $('cropBr'), $('cropWr')].forEach((c, i) => { const p = outExpo(prog(t, 20.45 + i * .12, 21.1 + i * .12)); c.style.opacity = p; c.style.transform = `translateY(${(1 - p) * 40}px)`; });
+  if (t >= 20.4 && t < 23.4) { const ft = 2 + (t - 20.4) * 1.8; frame($('fMap'), 'frames_date_hd', ft, 309); frame($('fWr'), 'frames_date_hd', ft, 309); frame($('fBr'), 'frames_date_hd', ft, 309); }
+
+  const u = t - 3;
+  // S5 (shifted +3s for fly scene, u = t - 3)
+  env($('s5'), u, 20.4, 24.4, .01, .5);
+  const slot = .6, s5a = 20.45;
+  PROJ.forEach((p, i) => {
+    const a = s5a + i * slot, b = a + slot;
+    const last = i === PROJ.length - 1;
+    const on = u >= a && (last || u < b);
+    p.w.style.opacity = on ? 1 : 0;
+    rise(p.chars, u, a, .018, .5);
+    const tail = p.w.children; const sp = outExpo(prog(u, a + .08, a + .45));
+    for (let k = 1; k < tail.length; k++) { tail[k].style.opacity = sp; tail[k].style.transform = `translateY(${(1 - sp) * 16}px)`; }
+  });
+  { const idx = clamp(Math.floor((u - s5a) / slot), 0, 5); $('s5count').textContent = `0${idx + 1} / 06`; }
+  $('mq1').style.transform = `translateX(${-(u - 20) * 140}px)`;
+  $('mq2').style.transform = `translateX(${-1400 + (u - 20) * 110}px)`;
+
+  // S6
+  env($('s6'), u, 24.4, 27.01, .01, .5);
+  { const p = outExpo(prog(u, 24.45, 25.1)); $('s6label').style.opacity = p; }
+  rise(urlC, u, 24.55, .03);
+  sw6.style.transform = `scaleX(${outExpo(prog(u, 25.3, 26))})`;
+  { const p = outExpo(prog(u, 25.5, 26.2)); $('s6links').style.opacity = p; $('s6links').style.transform = `translateY(${(1 - p) * 16}px)`; }
+  return Promise.all(pend);
+};
+window.ready = document.fonts.ready.then(() => { seek(0); return true; });
+// preview mode: open with ?play to watch in a browser
+if (location.search.includes('play')) { const t0 = performance.now(); (function f() { seek(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(f); })(); }
+</script>
+</body>
+</html>

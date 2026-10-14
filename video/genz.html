@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Brainrot Cut</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@500;800&display=block">
+<style>
+  :root { --lime: #C6FF00; --pink: #FF2E93; --blue: #2340FF; --ink: #0B0B0B; --cream: #FDF6D5; --flame: #FFA83A; --cyan: #00E5FF;
+    --slam: "Anton", sans-serif; --bri: "Bricolage Grotesque", sans-serif; --serif: "Instrument Serif", serif; --mono: "JetBrains Mono", monospace; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--ink); }
+  #bgc { position: absolute; inset: 0; }
+  #stage { position: absolute; inset: 0; }
+  .cut { position: absolute; inset: 0; display: none; overflow: hidden; }
+  .abs { position: absolute; }
+  .slam { font-family: var(--slam); text-transform: uppercase; line-height: .9; letter-spacing: -.01em; }
+  .center { left: 0; right: 0; text-align: center; }
+  .mono { font-family: var(--mono); font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+  .sticker { position: absolute; font-family: var(--bri); font-weight: 800; font-size: 46px; padding: 14px 26px; border: 5px solid var(--ink); border-radius: 18px; box-shadow: 9px 9px 0 var(--ink); white-space: nowrap; color: var(--ink); }
+  .frame { position: absolute; overflow: hidden; border: 8px solid var(--ink); border-radius: 22px; box-shadow: 18px 18px 0 var(--ink); background: #EFE3B3; }
+  .frame img { position: absolute; max-width: none; }
+  .dot { position: absolute; width: 26px; height: 26px; border-radius: 50%; margin: -13px 0 0 -13px; }
+  .tick { position: absolute; left: 0; white-space: nowrap; font-family: var(--slam); font-size: 70px; text-transform: uppercase; }
+  .word { position: absolute; font-family: var(--bri); font-weight: 800; font-size: 54px; padding: 6px 20px; border: 4px solid var(--ink); border-radius: 999px; white-space: nowrap; box-shadow: 6px 6px 0 var(--ink); }
+  .grain { position: absolute; inset: 0; pointer-events: none; opacity: .09; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>"); }
+</style>
+</head>
+<body>
+<div id="bgc"></div>
+<div id="stage">
+
+  <!-- 1 loading aura -->
+  <div class="cut" id="c1">
+    <p class="mono abs center" id="c1t" style="top:430px;font-size:44px;color:var(--lime)"></p>
+    <div class="abs" style="left:560px;top:520px;width:800px;height:34px;border:4px solid var(--lime);border-radius:8px"><div id="c1bar" style="height:100%;background:var(--lime);transform-origin:left"></div></div>
+    <p class="mono abs center" id="c1pct" style="top:580px;font-size:28px;color:var(--lime)"></p>
+  </div>
+
+  <!-- 2 name slam -->
+  <div class="cut" id="c2">
+    <h1 class="slam abs center" id="c2a" style="top:150px;font-size:380px;color:var(--ink)">Berk</h1>
+    <h1 class="slam abs center" id="c2b" style="top:470px;font-size:380px;color:var(--ink)">Demirci</h1>
+    <div class="sticker" id="c2s1" style="left:200px;top:120px;background:var(--pink);color:#fff">AI/ML ENGINEER (real)</div>
+    <div class="sticker" id="c2s2" style="left:1380px;top:820px;background:#fff">📍 ankara, türkiye</div>
+    <div class="sticker" id="c2s3" style="left:1330px;top:110px;background:var(--cyan)">final year 🎓</div>
+  </div>
+
+  <!-- 3 messy data -->
+  <div class="cut" id="c3">
+    <p class="mono abs" style="left:150px;top:200px;font-size:40px;color:var(--lime)">pov:</p>
+    <h2 class="slam abs" id="c3a" style="left:150px;top:260px;font-size:150px;color:#fff;width:900px">you make messy data</h2>
+    <h2 class="slam abs" id="c3b" style="left:150px;top:560px;font-size:150px;color:var(--ink);background:var(--pink);padding:0 24px">useful ✨</h2>
+    <div id="dots"></div>
+    <div class="sticker" id="c3s" style="left:1220px;top:860px;background:var(--lime)">organized era</div>
+  </div>
+
+  <!-- 4 intern arc -->
+  <div class="cut" id="c4">
+    <p class="mono abs" style="left:80px;top:60px;font-size:36px;color:var(--ink)">the intern arc</p>
+    <p class="mono abs" id="c4n" style="right:80px;top:60px;font-size:36px;color:var(--ink)"></p>
+    <h2 class="slam abs center" id="c4co" style="top:330px;font-size:300px"></h2>
+    <p class="mono abs center" id="c4what" style="top:680px;font-size:40px"></p>
+    <div class="sticker" id="c4s" style="left:1300px;top:780px;background:var(--lime)">🏆 1st place</div>
+  </div>
+
+  <!-- 5 koku -->
+  <div class="cut" id="c5">
+    <p class="mono abs" style="left:120px;top:110px;font-size:38px;color:var(--ink)">side quest: koku</p>
+    <h2 class="abs" id="c5a" style="left:120px;top:170px;font-family:var(--serif);font-style:italic;font-size:170px;line-height:1;color:var(--ink)">taught a 0.6B model<br>to smell 👃</h2>
+    <div class="abs" id="c5panel" style="left:1110px;top:470px;width:700px;height:430px;background:var(--ink);border-radius:28px;box-shadow:16px 16px 0 var(--pink)">
+      <p class="mono" style="position:absolute;left:40px;top:34px;font-size:28px;color:#fff">nDCG@10</p>
+      <p class="slam" id="c5num" style="position:absolute;left:36px;top:80px;font-size:280px;color:var(--lime)">0.18</p>
+    </div>
+    <div class="sticker" id="c5s1" style="left:120px;top:640px;background:var(--cyan)">8B teacher ➜ 0.6B student</div>
+    <div class="sticker" id="c5s2" style="left:1240px;top:350px;background:var(--pink);color:#fff">+167% no cap 📈</div>
+  </div>
+
+  <!-- 6a meet the fly -->
+  <div class="cut" id="c6a">
+    <div class="frame" id="f6a" style="left:620px;top:200px;width:1180px;height:780px"><img id="i6a"></div>
+    <h2 class="slam abs" id="c6at" style="left:80px;top:170px;font-size:190px;color:#fff;width:600px">meet the fly</h2>
+    <div class="sticker" id="c6as" style="left:110px;top:720px;background:var(--lime)">🪰 he has a wardrobe</div>
+  </div>
+  <!-- 6b wardrobe pick -->
+  <div class="cut" id="c6b">
+    <div class="frame" id="f6b" style="left:120px;top:190px;width:1020px;height:700px;background:#3A2A1E"><img id="i6b"></div>
+    <h2 class="slam abs" style="left:1210px;top:150px;font-size:120px;color:var(--ink);width:640px">fine-tuned retriever picks the fit</h2>
+    <div class="sticker" id="c6bs" style="left:1200px;top:720px;background:var(--pink);color:#fff">Vanille Fatale 2024 💅</div>
+  </div>
+  <!-- 6c plume -->
+  <div class="cut" id="c6c">
+    <div class="frame" id="f6c" style="left:0;top:0;width:1920px;height:1080px;border:0;border-radius:0;box-shadow:none"><img id="i6c"></div>
+    <h2 class="slam abs" id="c6ct" style="left:80px;top:70px;font-size:150px;color:var(--ink);background:var(--lime);padding:6px 30px">tracking the plume fr</h2>
+    <div class="sticker" id="c6cs" style="left:1020px;top:860px;background:#fff">👃 surge upwind, cast crosswind</div>
+  </div>
+  <!-- 6d date -->
+  <div class="cut" id="c6d">
+    <div class="frame" id="f6d" style="left:480px;top:250px;width:960px;height:720px"><img id="i6d"></div>
+    <h2 class="slam abs center" id="c6dt" style="top:70px;font-size:170px;color:#fff;-webkit-text-stroke:6px var(--ink)">date night 💘</h2>
+    <div class="sticker" id="c6ds" style="left:180px;top:850px;background:var(--pink);color:#fff">courtship song unlocked 🎶</div>
+  </div>
+  <!-- 6e club -->
+  <div class="cut" id="c6e">
+    <div class="frame" id="f6e" style="left:460px;top:250px;width:1000px;height:720px"><img id="i6e"></div>
+    <div class="abs" id="strobe" style="inset:0;mix-blend-mode:color"></div>
+    <h2 class="slam abs center" id="c6et" style="top:60px;font-size:200px;color:var(--lime);-webkit-text-stroke:6px var(--ink)">club era 🪩</h2>
+    <div class="sticker" id="c6es" style="left:1040px;top:860px;background:var(--cyan)">wearing Gucci Guilty Absolute</div>
+  </div>
+  <!-- 6f brain -->
+  <div class="cut" id="c6f">
+    <div class="frame" id="f6f" style="left:310px;top:210px;width:1300px;height:790px;background:#1A1412;border-color:var(--lime);box-shadow:18px 18px 0 var(--pink)"><img id="i6f"></div>
+    <h2 class="slam abs center" id="c6ft" style="top:50px;font-size:150px;color:var(--lime)">the fly's brain rn 🧠</h2>
+    <div class="sticker" id="c6fs" style="left:1180px;top:920px;background:#fff">real FlyWire neurons btw</div>
+  </div>
+
+  <!-- 7 speedrun -->
+  <div class="cut" id="c7">
+    <p class="mono abs" style="left:80px;top:60px;font-size:36px">project speedrun any%</p>
+    <p class="mono abs" id="c7timer" style="right:80px;top:60px;font-size:36px"></p>
+    <h2 class="slam abs center" id="c7name" style="top:300px;font-size:250px"></h2>
+    <p class="abs center" id="c7desc" style="top:580px;font-family:var(--bri);font-weight:800;font-size:52px"></p>
+    <div class="sticker" id="c7s" style="left:1250px;top:780px;background:#fff"></div>
+  </div>
+
+  <!-- 8 stack flood -->
+  <div class="cut" id="c8"><div id="words"></div>
+    <h2 class="slam abs center" id="c8t" style="top:400px;font-size:220px;color:#fff;-webkit-text-stroke:8px var(--ink)">the stack is stacking</h2>
+  </div>
+
+  <!-- 9 outro -->
+  <div class="cut" id="c9">
+    <div class="tick" id="tk1" style="top:40px;color:var(--lime)"></div>
+    <div class="tick" id="tk2" style="top:950px;color:var(--pink)"></div>
+    <p class="mono abs center" id="c9a" style="top:330px;font-size:40px;color:#fff">link in bio (it's literally the url)</p>
+    <h2 class="slam abs center" id="c9url" style="top:400px;font-size:230px;color:var(--lime)">demirciberk.com</h2>
+    <div class="sticker" id="c9s" style="left:1400px;top:700px;background:var(--pink);color:#fff">go look 👀</div>
+    <p class="mono abs center" id="c9b" style="top:760px;font-size:30px;color:#fff">github · linkedin · demirciberk.db@gmail.com</p>
+  </div>
+
+  <div class="grain"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const outExpo = x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x);
+const outBack = x => { const c = 2.2; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const inOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const lerp = (a, b, x) => a + (b - a) * x;
+let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+// cuts: [id, start, end, bg]
+const CUTS = [['c1', 0, .9, '#0B0B0B'], ['c2', .9, 2.6, '#C6FF00'], ['c3', 2.6, 4.6, '#0B0B0B'], ['c4', 4.6, 7, null],
+  ['c5', 7, 10, '#FDF6D5'], ['c6a', 10, 11.2, '#2340FF'], ['c6b', 11.2, 12.6, '#FFA83A'], ['c6c', 12.6, 14.2, '#000'],
+  ['c6d', 14.2, 15.4, '#FF2E93'], ['c6e', 15.4, 16.6, '#0B0B0B'], ['c6f', 16.6, 17.8, '#FF2E93'], ['c7', 17.8, 20.4, null],
+  ['c8', 20.4, 22.4, '#2340FF'], ['c9', 22.4, 26, '#0B0B0B']];
+// impact times drive screen shake + RGB split
+const HITS = [.9, 1.15, 2.6, 3.7, 4.6, 5.2, 5.8, 6.4, 7, 8.6, 10, 11.2, 12.6, 14.2, 15.4, 16.6, 17.8, 18.23, 18.66, 19.09, 19.52, 19.95, 20.4, 21.6, 22.6];
+const hit = t => HITS.reduce((m, h) => t >= h ? Math.max(m, Math.exp(-(t - h) * 9)) : m, 0);
+const slamIn = (el, t, at, from = 2.6) => { const p = prog(t, at, at + .22); el.style.transform = `scale(${lerp(from, 1, outExpo(p))})`; el.style.opacity = t >= at ? 1 : 0; };
+const pop = (el, t, at, rot) => { const p = outBack(prog(t, at, at + .3)); el.style.transform = `rotate(${rot}deg) scale(${Math.max(0, p)})`; el.style.opacity = t >= at ? 1 : 0; };
+const rgb = (el, k) => { el.style.textShadow = k > .02 ? `${k * 14}px 0 rgba(255,46,147,.9), ${-k * 14}px 0 rgba(0,229,255,.9)` : 'none'; };
+
+// footage frames captured from demo/fly (capture.js), 30fps, 1920x1080
+let pend = [];
+const N = { frames_date_hd: [13, 309], frames_club_hd: [238, 279] }; // captured frame ranges
+function shot(img, box, dir, time, cx, cy, sw) {
+  const src = `${dir}/${String(clamp(Math.round(time * 30) + 1, ...N[dir])).padStart(4, '0')}.jpg`;
+  if (img.dataset.src !== src) { img.dataset.src = src; img.src = src; pend.push(img.decode().catch(() => {})); }
+  const W = box.clientWidth, H = box.clientHeight, s = W / sw;
+  img.style.width = 1920 * s + 'px'; img.style.left = W / 2 - cx * s + 'px'; img.style.top = H / 2 - cy * s + 'px';
+}
+
+// build
+const dots = [], DC = ['#C6FF00', '#FF2E93', '#00E5FF', '#FFA83A', '#fff'];
+for (let r = 0; r < 7; r++) for (let c = 0; c < 9; c++) {
+  const d = document.createElement('div'); d.className = 'dot'; d.style.background = DC[(r + c) % 5]; $('dots').appendChild(d);
+  dots.push({ el: d, sx: 1050 + rnd() * 800, sy: 100 + rnd() * 850, ph: rnd() * 7, gx: 1240 + c * 64, gy: 250 + r * 72 });
+}
+const JOBS = [['Enocta', 'fine-tuning + agent harnesses', '#2340FF', '#fff'], ['OBSS', 'built AI apps', '#FF2E93', '#fff'],
+  ['Aselsan', 'benchmarked a local model', '#C6FF00', '#0B0B0B'], ['Pulsar Robotik', 'VLA robot arm', '#FFA83A', '#0B0B0B']];
+const PROJ = [['UniBot', 'RAG over the whole uni site', 'BM25 + dense + reranker', '#C6FF00'], ['CV Sender', 'resume ➜ tailored outreach', 'LLM pipeline', '#FF2E93'],
+  ['Medical Expense', 'ML that retrains itself', 'MLOps 🔁', '#00E5FF'], ['DunGen AI', 'AI tabletop RPG app', 'closed beta 🎲', '#FFA83A'],
+  ['Air Quality', 'predicts the air', 'time series 🌫️', '#FDF6D5'], ['Open Source', 'PRs merged in the wild', 'contributor 🫡', '#C6FF00']];
+const STACK = ['PyTorch', 'Hugging Face', 'LangGraph', 'RAG', 'MCP', 'scikit-learn', 'LangChain', 'pandas', 'Python', 'SQL', 'fine-tuning', 'distillation',
+  'agents', 'OpenAI API', 'BGE-M3', 'Qwen3', 'llama.cpp', 'GGUF', 'numpy', 'Java', 'React Native', 'Power BI', 'Git', 'JavaScript'];
+const WC = ['#C6FF00', '#FF2E93', '#00E5FF', '#FFA83A', '#fff', '#FDF6D5'];
+const words = STACK.map((w, i) => { const d = document.createElement('div'); d.className = 'word'; d.textContent = w;
+  d.style.background = WC[i % WC.length]; d.style.left = 40 + rnd() * 1600 + 'px'; d.style.top = 30 + rnd() * 960 + 'px';
+  $('words').appendChild(d); return { el: d, rot: (rnd() - .5) * 30, at: 20.45 + i * .055 }; });
+const tick = '✦ BERK DEMIRCI ✦ AI/ML ✦ HIRE ME? ✦ RAG ✦ AGENTS ✦ FINE-TUNING ';
+$('tk1').textContent = tick.repeat(6); $('tk2').textContent = tick.repeat(6);
+
+window.DURATION = 26;
+window.seek = function (t) {
+  pend = [];
+  const h = hit(t);
+  // shake
+  const sx = Math.sin(t * 91) * 26 * h, sy = Math.cos(t * 77) * 20 * h;
+  $('stage').style.transform = `translate(${sx}px, ${sy}px) rotate(${Math.sin(t * 53) * 1.2 * h}deg)`;
+  let bg = '#000';
+  CUTS.forEach(([id, a, b, c]) => { const on = t >= a && t < b; $(id).style.display = on ? 'block' : 'none'; if (on && c) bg = c; });
+
+  // 1
+  { const msg = 'loading aura...'; $('c1t').textContent = msg.slice(0, Math.floor(t / .035));
+    const p = inOut(prog(t, .1, .85)); $('c1bar').style.transform = `scaleX(${p})`; $('c1pct').textContent = Math.round(p * 100) + '%'; }
+  // 2
+  slamIn($('c2a'), t, .9); slamIn($('c2b'), t, 1.15); rgb($('c2a'), h); rgb($('c2b'), h);
+  pop($('c2s1'), t, 1.5, -8); pop($('c2s2'), t, 1.8, 6); pop($('c2s3'), t, 2.05, 9);
+  if (t >= 2.25 && t < 2.6) bg = Math.floor(t * 20) % 2 ? '#FF2E93' : '#C6FF00';
+  // 3
+  slamIn($('c3a'), t, 2.6, 1.6); rgb($('c3a'), h); slamIn($('c3b'), t, 3.7, 2.2); pop($('c3s'), t, 4.0, -6);
+  dots.forEach(d => { const o = outExpo(prog(t, 3.55, 3.85)), j = 60 * (1 - o);
+    d.el.style.left = lerp(d.sx, d.gx, o) + Math.sin(t * 13 + d.ph) * j + 'px'; d.el.style.top = lerp(d.sy, d.gy, o) + Math.cos(t * 11 + d.ph) * j + 'px';
+    d.el.style.borderRadius = lerp(50, 18, o) + '%'; });
+  // 4
+  if (t >= 4.6 && t < 7) { const i = clamp(Math.floor((t - 4.6) / .6), 0, 3), j = JOBS[i];
+    bg = j[2]; $('c4co').textContent = j[0]; $('c4co').style.color = j[3]; $('c4what').textContent = j[1]; $('c4what').style.color = j[3];
+    $('c4n').textContent = `internship ${i + 1}/4`; slamIn($('c4co'), t, 4.6 + i * .6, 1.8); rgb($('c4co'), h);
+    $('c4s').style.display = i === 1 ? 'block' : 'none'; pop($('c4s'), t, 5.3, -10); }
+  // 5
+  { const p = outExpo(prog(t, 7, 7.4)); $('c5a').style.transform = `translateX(${(1 - p) * -300}px)`; }
+  pop($('c5s1'), t, 7.5, -4);
+  { const p = outBack(prog(t, 7.7, 8.1)); $('c5panel').style.transform = `rotate(3deg) scale(${Math.max(0, p)})`;
+    const v = lerp(.18, .48, outExpo(prog(t, 8.2, 8.6))); $('c5num').textContent = v.toFixed(2); rgb($('c5num'), h); }
+  pop($('c5s2'), t, 8.7, 7);
+  // 6a: idle map at home, slow push in
+  if (t >= 10 && t < 11.2) { const z = lerp(1, 1.15, (t - 10) / 1.2); shot($('i6a'), $('f6a'), 'frames_date_hd', .5 + (t - 10), 640, 560, 960 / z);
+    $('f6a').style.transform = `rotate(-3deg) scale(${outBack(prog(t, 10, 10.25))})`; slamIn($('c6at'), t, 10.15, 2); pop($('c6as'), t, 10.6, 5); }
+  // 6b: wardrobe reveal (footage 1.6 -> 3.6)
+  if (t >= 11.2 && t < 12.6) { const z = lerp(1, 1.25, inOut(prog(t, 11.6, 12.6)));
+    shot($('i6b'), $('f6b'), 'frames_date_hd', 1.6 + (t - 11.2) * 1.4, lerp(1442, 1510, inOut(prog(t, 11.6, 12.6))), lerp(800, 760, inOut(prog(t, 11.6, 12.6))), 520 / z);
+    $('f6b').style.transform = `rotate(2deg) scale(${outBack(prog(t, 11.2, 11.45))})`; pop($('c6bs'), t, 11.9, -7); }
+  // 6c: flight (footage 3.8 -> 7.6), camera follows fly
+  if (t >= 12.6 && t < 14.2) { const ft = 3.8 + (t - 12.6) * 2.4, p = prog(ft, 3.8, 7.6);
+    shot($('i6c'), $('f6c'), 'frames_date_hd', ft, clamp(lerp(420, 930, inOut(p)), 540, 775), lerp(600, 660, p), 700);
+    slamIn($('c6ct'), t, 12.7, 1.5); pop($('c6cs'), t, 13.2, -5); }
+  // 6d: restaurant courtship, tight zoom
+  if (t >= 14.2 && t < 15.4) { shot($('i6d'), $('f6d'), 'frames_date_hd', 9 + (t - 14.2), 920, 670, lerp(420, 380, prog(t, 14.2, 15.4)));
+    $('f6d').style.transform = `rotate(2deg) scale(${outBack(prog(t, 14.2, 14.45))})`;
+    slamIn($('c6dt'), t, 14.25, 1.8); pop($('c6ds'), t, 14.6, -6); }
+  // 6e: night club dance, strobe
+  if (t >= 15.4 && t < 16.6) { shot($('i6e'), $('f6e'), 'frames_club_hd', 8 + (t - 15.4), 610, 410, lerp(480, 420, prog(t, 15.4, 16.6)));
+    $('f6e').style.transform = `rotate(-2deg) scale(${outBack(prog(t, 15.4, 15.65))})`;
+    const f = Math.floor(t * 12) % 3; $('strobe').style.background = ['rgba(255,46,147,.55)', 'rgba(0,229,255,.5)', 'rgba(198,255,0,.5)'][f];
+    slamIn($('c6et'), t, 15.45, 1.8); rgb($('c6et'), .4 + h); pop($('c6es'), t, 15.9, 5); }
+  // 6f: brain
+  if (t >= 16.6 && t < 17.8) { shot($('i6f'), $('f6f'), 'frames_date_hd', 5 + (t - 16.6), 1442, 300, 520);
+    $('f6f').style.transform = `rotate(-2deg) scale(${outBack(prog(t, 16.6, 16.85))})`; slamIn($('c6ft'), t, 16.65, 1.6); rgb($('c6ft'), h); pop($('c6fs'), t, 17.1, 6); }
+  // 7 speedrun
+  if (t >= 17.8 && t < 20.4) { const i = clamp(Math.floor((t - 17.8) / .43), 0, 5), p = PROJ[i], dark = i % 2 === 0;
+    bg = dark ? '#0B0B0B' : p[3]; const fg = dark ? p[3] : '#0B0B0B';
+    ['c7name', 'c7desc', 'c7timer'].forEach(k => $(k).style.color = fg); $('c7').querySelector('p').style.color = fg;
+    $('c7name').textContent = p[0]; $('c7desc').textContent = p[1]; $('c7s').textContent = p[2];
+    slamIn($('c7name'), t, 17.8 + i * .43, 1.7); rgb($('c7name'), h); pop($('c7s'), t, 17.9 + i * .43, i % 2 ? 6 : -6);
+    const e = t - 17.8; $('c7timer').textContent = `00:0${Math.floor(e)}.${String(Math.floor((e % 1) * 1000)).padStart(3, '0')}`; }
+  // 8 stack flood
+  words.forEach(w => pop(w.el, t, w.at, w.rot));
+  slamIn($('c8t'), t, 21.6, 2.4); rgb($('c8t'), h);
+  // 9 outro
+  $('tk1').style.transform = `translateX(${-(t - 22) * 260}px)`; $('tk2').style.transform = `translateX(${-2400 + (t - 22) * 260}px)`;
+  { const p = outExpo(prog(t, 22.45, 22.8)); $('c9a').style.opacity = p; }
+  slamIn($('c9url'), t, 22.6, 2.8); $('c9url').style.textShadow = `${10 + h * 20}px ${10 + h * 10}px 0 #FF2E93`;
+  pop($('c9s'), t, 23.3, -9); $('c9b').style.opacity = outExpo(prog(t, 23.6, 24));
+  if (t > 25.6) $('stage').style.opacity = 1 - prog(t, 25.6, 26); else $('stage').style.opacity = 1;
+
+  $('bgc').style.background = bg;
+  return Promise.all(pend);
+};
+window.ready = document.fonts.ready.then(() => seek(0)).then(() => true);
+if (location.search.includes('play')) { const t0 = performance.now(); (function f() { seek(((performance.now() - t0) / 1000) % 26); requestAnimationFrame(f); })(); }
+</script>
+</body>
+</html>

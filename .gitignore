@@ -3,3 +3,9 @@
 .wrangler
 .playwright-cli
 !demo/**/*.png
+video/frames_date_hd/
+video/showreel-cream.mp4
+video/showreel-genz.mp4
+video/showreel-genz-music.mp4
+video/music.wav
+!apple-touch-icon.png

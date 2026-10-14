@@ -4,3 +4,14 @@
 .playwright-cli
 wrangler.jsonc
 .assetsignore
+video/comp.html
+video/render.js
+video/genz.html
+video/capture.js
+video/music.py
+video/music.wav
+video/thumbs.js
+video/frames_date_hd/
+video/showreel-cream.mp4
+video/showreel-genz.mp4
+video/showreel-genz-music.mp4
