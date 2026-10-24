@@ -2,7 +2,7 @@
 
 Illustrations generated with Google Gemini (gemini.google.com, image mode / Nano Banana),
 October 2026, from the account demirciberk.db@gmail.com. hero and fly came from the 3.1 Pro
-model; koku, cv, medical, portrait and contact came from 3.6 Flash.
+model; koku, cv, medical, tree and contact came from 3.6 Flash.
 
 Every prompt ended with this shared style block:
 
@@ -21,6 +21,7 @@ Every prompt ended with this shared style block:
 | koku    | faceted perfume bottle, vapour breaking into ranked dots, rose / fig / bergamot sprigs |
 | cv      | paper letters and envelopes flying in an arc like migrating birds |
 | medical | one anatomical heart engraving with a regression curve and data points, stethoscope |
+| tree    | Newton under the apple tree, redone: a young man reads a fantasy novel (ram emblem, a nod to Lev Grossman's The Magicians) against a tree that grows rolled research papers, 4:3 |
 | contact | paper airplane folded from a letter, dotted looping trail |
 
 `sep.py` splits each PNG into a black-ink layer (`*-k.webp`) and a red-ink layer
@@ -29,7 +30,3 @@ print "out of register" on hover and pointer move.
 
     python sep.py source.png name 1600
 
-portrait is not from Gemini: `ascii.py` renders Berk's ID photo as a red halftone dot grid
-(40 columns) with a sparse black pass on the darkest cells.
-
-    python ascii.py photo.jpg portrait dots 40
