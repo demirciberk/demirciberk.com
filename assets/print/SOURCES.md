@@ -2,7 +2,7 @@
 
 Illustrations generated with Google Gemini (gemini.google.com, image mode / Nano Banana),
 October 2026, from the account demirciberk.db@gmail.com. hero and fly came from the 3.1 Pro
-model; koku, cv, medical, about and contact came from 3.6 Flash.
+model; koku, cv, medical, ankara and contact came from 3.6 Flash.
 
 Every prompt ended with this shared style block:
 
@@ -21,7 +21,7 @@ Every prompt ended with this shared style block:
 | koku    | faceted perfume bottle, vapour breaking into ranked dots, rose / fig / bergamot sprigs |
 | cv      | paper letters and envelopes flying in an arc like migrating birds |
 | medical | one anatomical heart engraving with a regression curve and data points, stethoscope |
-| about   | desk still life: technical books, notebook with graphs, pencil, vial, dried rose |
+| ankara  | Ankara skyline (Atakule, Anitkabir), laptop with a falling loss curve, first-place trophy, tea glass |
 | contact | paper airplane folded from a letter, dotted looping trail |
 
 `sep.py` splits each PNG into a black-ink layer (`*-k.webp`) and a red-ink layer
