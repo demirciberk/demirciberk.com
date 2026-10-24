@@ -21,7 +21,7 @@ Every prompt ended with this shared style block:
 | koku    | faceted perfume bottle, vapour breaking into ranked dots, rose / fig / bergamot sprigs |
 | cv      | paper letters and envelopes flying in an arc like migrating birds |
 | medical | one anatomical heart engraving with a regression curve and data points, stethoscope |
-| tree    | Newton under the apple tree, redone: a young man reads a fantasy novel (ram emblem, a nod to Lev Grossman's The Magicians) against a tree that grows rolled research papers, 4:3 |
+| tree    | Newton under the apple tree, redone in plain line art: a young man reads The Magicians (Lev Grossman) against a tree whose fruit are AI papers with legible titles (Attention Is All You Need, BERT, GPT-3, ResNet, LoRA, Scaling Laws, Chain-of-Thought, Diffusion), 4:3 |
 | contact | paper airplane folded from a letter, dotted looping trail |
 
 `sep.py` splits each PNG into a black-ink layer (`*-k.webp`) and a red-ink layer

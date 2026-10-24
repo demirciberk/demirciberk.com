@@ -310,7 +310,7 @@ footer { border-top: 1px solid var(--ink); }
   .plate { grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: clamp(40px, 5vw, 80px); }
   .plate--flip { grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr); }
   .plate--flip .art { order: 2; }
-  .about-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+  .about-grid { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
   .about-art { position: sticky; top: 96px; }
 }
 @media (max-width: 979px) {
