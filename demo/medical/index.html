@@ -5,18 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Medical Expense Prediction - Live demo - Berk Demirci</title>
 <meta name="description" content="Live demo: predict yearly medical insurance charges with a linear regression model trained on the insurance dataset.">
-<meta name="theme-color" content="#FFFFFF">
+<meta name="theme-color" content="#F4EEE3">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Geist:wght@400;500&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="../../assets/fonts.css">
 <style>
   :root {
-    --bg: #FFFFFF; --surface: #F5F6FA; --line: #E3E4EA; --fg: #0B0B0F; --muted: #4A4A55; --accent: #2D5BFF; --lime: #D4FF3A; --pink: #FF3D7F;
-    --sans: "Geist", ui-sans-serif, system-ui, sans-serif;
-    --display: "Bricolage Grotesque", "Geist", ui-sans-serif, system-ui, sans-serif;
+    --bg: #F4EEE3; --surface: #ECE4D6; --line: #D9CFBE; --fg: #1B1916; --muted: #5E5850; --accent: #B4321E; --lime: #F3C3B4; --pink: #E5432A;
+    --sans: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --display: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
     --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
   }
   * { box-sizing: border-box; }
@@ -25,20 +23,20 @@
   a { color: var(--accent); }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   /* back bar */
-  .backbar { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 2px solid #0B0B0F; }
+  .backbar { position: sticky; top: 0; z-index: 100; background: var(--bg); border-bottom: 1px solid #1B1916; }
   .backbar-in { max-width: 720px; margin: 0 auto; padding: 0 24px; height: 50px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .backbar a { font: 800 1rem/1 var(--display); letter-spacing: -0.02em; color: #0B0B0F; text-decoration: none; padding: 6px 0; white-space: nowrap; }
-  .backbar a:hover { color: #2D5BFF; }
-  .backbar a:focus-visible { outline: 2px solid #2D5BFF; outline-offset: 4px; }
-  .backbar span { font: 500 0.6875rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: #4A4A55; text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .backbar a { font: 800 1rem/1 var(--display); letter-spacing: -0.02em; color: #1B1916; text-decoration: none; padding: 6px 0; white-space: nowrap; }
+  .backbar a:hover { color: #B4321E; }
+  .backbar a:focus-visible { outline: 2px solid #B4321E; outline-offset: 4px; }
+  .backbar span { font: 500 0.6875rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: #5E5850; text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .label { font: 500 0.6875rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 18px; }
   h1 { font: 800 clamp(2.2rem, 6vw, 3.25rem)/1.02 var(--display); letter-spacing: -0.03em; margin: 0 0 14px; }
   .lede { color: var(--muted); margin: 0 0 32px; }
-  form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; background: var(--surface); border: 2px solid var(--fg); border-radius: 8px; box-shadow: 6px 6px 0 var(--fg); padding: clamp(20px, 4vw, 30px); }
+  form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; background: var(--surface); border: 1px solid var(--fg); border-radius: 8px; box-shadow: none; padding: clamp(20px, 4vw, 30px); }
   label { display: grid; gap: 6px; font-size: 0.875rem; color: var(--muted); }
-  input, select { font: inherit; color: var(--fg); background: var(--bg); border: 2px solid var(--fg); border-radius: 6px; padding: 8px 10px; }
+  input, select { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--fg); border-radius: 6px; padding: 8px 10px; }
   output { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 18px; }
-  output strong { display: block; width: fit-content; margin-top: 6px; padding: 2px 10px; background: var(--lime); border: 2px solid var(--fg); border-radius: 6px; font: 800 clamp(2.4rem, 7vw, 3.5rem)/1.1 var(--display); letter-spacing: -0.03em; }
+  output strong { display: block; width: fit-content; margin-top: 6px; padding: 2px 10px; background: var(--lime); border: 1px solid var(--fg); border-radius: 6px; font: 800 clamp(2.4rem, 7vw, 3.5rem)/1.1 var(--display); letter-spacing: -0.03em; }
   output span { font-size: 0.875rem; color: var(--muted); }
   .note { font-size: 0.875rem; color: var(--muted); margin: 24px 0 0; }
   .links { display: flex; gap: 24px; margin-top: 28px; font: 500 0.6875rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
@@ -46,7 +44,7 @@
 </style>
 </head>
 <body>
-<div class="backbar"><div class="backbar-in"><a href="../../index.html#projects">&larr; Berk Demirci</a><span>Medical expense &middot; live demo</span></div></div>
+<div class="backbar"><div class="backbar-in"><a href="../../work.html">&larr; Berk Demirci</a><span>Medical expense &middot; live demo</span></div></div>
 <main>
   <p class="label">Live demo</p>
   <h1>Medical Expense Prediction</h1>

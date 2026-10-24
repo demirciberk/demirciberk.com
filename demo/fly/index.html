@@ -5,19 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fly wardrobe - koku - Berk Demirci</title>
 <meta name="description" content="A 3D fruit fly picks a perfume for the office, a date and the gym from a reshuffled wardrobe using the koku retriever, then tracks the odor plume there while its brain lights up.">
-<meta name="theme-color" content="#FFFFFF">
+<meta name="theme-color" content="#F4EEE3">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Geist:wght@400;500&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="../../assets/fonts.css">
 <style>
   :root {
-    --bg: #FFFFFF; --surface: #F5F6FA; --line: #E3E4EA; --fg: #0B0B0F; --muted: #4A4A55; --accent: #2D5BFF; --lime: #D4FF3A; --pink: #FF3D7F; --ok: #1F9D55;
+    --bg: #F4EEE3; --surface: #ECE4D6; --line: #D9CFBE; --fg: #1B1916; --muted: #5E5850; --accent: #B4321E; --lime: #F3C3B4; --pink: #E5432A; --ok: #1F9D55;
     --wood: #3A2A1E; --wood-2: #4A3626;
-    --sans: "Geist", ui-sans-serif, system-ui, sans-serif;
-    --display: "Bricolage Grotesque", "Geist", ui-sans-serif, system-ui, sans-serif;
+    --sans: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --display: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
     --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   }
@@ -27,28 +25,28 @@
   a { color: var(--accent); }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   /* back bar */
-  .backbar { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 2px solid #0B0B0F; }
+  .backbar { position: sticky; top: 0; z-index: 100; background: var(--bg); border-bottom: 1px solid #1B1916; }
   .backbar-in { max-width: 1600px; margin: 0 auto; padding: 0 24px; height: 50px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .backbar a { font: 800 1rem/1 var(--display); letter-spacing: -0.02em; color: #0B0B0F; text-decoration: none; padding: 6px 0; white-space: nowrap; }
-  .backbar a:hover { color: #2D5BFF; }
-  .backbar a:focus-visible { outline: 2px solid #2D5BFF; outline-offset: 4px; }
-  .backbar span { font: 500 0.6875rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: #4A4A55; text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .backbar a { font: 800 1rem/1 var(--display); letter-spacing: -0.02em; color: #1B1916; text-decoration: none; padding: 6px 0; white-space: nowrap; }
+  .backbar a:hover { color: #B4321E; }
+  .backbar a:focus-visible { outline: 2px solid #B4321E; outline-offset: 4px; }
+  .backbar span { font: 500 0.6875rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: #5E5850; text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .label { font: 500 0.6875rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 18px; }
   h1 { font: 800 clamp(2.2rem, 6vw, 3.25rem)/1.02 var(--display); letter-spacing: -0.03em; margin: 0 0 14px; }
   h2 { font: 700 1.5rem/1.1 var(--display); letter-spacing: -0.03em; margin: 0 0 4px; }
   .lede { color: var(--muted); margin: 0 0 28px; max-width: 68ch; }
-  .panel { background: var(--surface); border: 2px solid var(--fg); border-radius: 10px; box-shadow: 4px 4px 0 var(--fg); padding: 18px; }
+  .panel { background: var(--surface); border: 1px solid var(--fg); border-radius: 10px; box-shadow: none; padding: 18px; }
 
   /* world */
-  .world { position: relative; border: 2px solid var(--fg); border-radius: 10px; box-shadow: 4px 4px 0 var(--fg); overflow: hidden; background: #F5F6FA; aspect-ratio: 16 / 9; }
+  .world { position: relative; border: 1px solid var(--fg); border-radius: 10px; box-shadow: none; overflow: hidden; background: #ECE4D6; aspect-ratio: 16 / 9; }
   .world canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
   .hud { position: absolute; left: 14px; top: 14px; right: 14px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; pointer-events: none; }
-  .chip { pointer-events: auto; font: 500 0.75rem/1.4 var(--mono); color: var(--fg); background: #fff; border: 2px solid var(--fg); border-radius: 8px; padding: 5px 12px; max-width: 70%; margin: 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 3px 3px 0 var(--fg); }
+  .chip { pointer-events: auto; font: 500 0.75rem/1.4 var(--mono); color: var(--fg); background: var(--bg); border: 1px solid var(--fg); border-radius: 8px; padding: 5px 12px; max-width: 70%; margin: 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: none; }
   .chip .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-right: 8px; vertical-align: 1px; }
   .controls { flex: none; display: flex; flex-wrap: wrap; gap: 8px; pointer-events: auto; justify-content: flex-end; }
-  button { font: inherit; font-size: 0.8125rem; font-weight: 500; color: var(--fg); background: #fff; border: 2px solid var(--fg); border-radius: 8px; padding: 3px 12px; line-height: 1.4; cursor: pointer; box-shadow: 3px 3px 0 var(--fg); transition: background-color .15s, transform .12s var(--ease-out), box-shadow .12s var(--ease-out); }
+  button { font: inherit; font-size: 0.8125rem; font-weight: 500; color: var(--fg); background: var(--bg); border: 1px solid var(--fg); border-radius: 8px; padding: 3px 12px; line-height: 1.4; cursor: pointer; box-shadow: none; transition: background-color .15s, transform .12s var(--ease-out), box-shadow .12s var(--ease-out); }
   button:hover:not(:disabled) { background: var(--lime); }
-  button:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--fg); }
+  button:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: none; }
   button.go { font-weight: 500; }
   button.go:disabled { opacity: 0.45; cursor: default; transform: none; }
   button.go[aria-pressed="true"] { opacity: 1; background: var(--accent); border-color: var(--fg); color: #fff; }
@@ -63,7 +61,7 @@
   .below { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 16px; margin-top: 16px; align-items: start; }
 
   /* brain */
-  .brain-wrap { position: relative; aspect-ratio: 4 / 3; border-radius: 8px; background: #0B0B0F; overflow: hidden; }
+  .brain-wrap { position: relative; aspect-ratio: 4 / 3; border-radius: 8px; background: #1B1916; overflow: hidden; }
   .brain-wrap canvas { display: block; width: 100%; height: 100%; cursor: grab; }
   .brain-wrap canvas:active { cursor: grabbing; }
   .brain-hint { position: absolute; right: 10px; bottom: 8px; font: 500 0.625rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255, 255, 255, 0.5); pointer-events: none; }
@@ -71,7 +69,7 @@
   .regions li { font-size: 0.75rem; line-height: 1.25; }
   .regions li { position: relative; cursor: help; border-radius: 4px; }
   .regions b { font-weight: 500; text-decoration: underline dotted var(--muted); text-underline-offset: 3px; }
-  .tip { position: absolute; left: 0; bottom: calc(100% + 8px); z-index: 5; width: min(240px, 70vw); padding: 8px 10px; border-radius: 8px; background: var(--fg); color: #fff; font-size: 0.75rem; line-height: 1.4; box-shadow: 3px 3px 0 var(--accent);
+  .tip { position: absolute; left: 0; bottom: calc(100% + 8px); z-index: 5; width: min(240px, 70vw); padding: 8px 10px; border-radius: 8px; background: var(--fg); color: #fff; font-size: 0.75rem; line-height: 1.4; box-shadow: none;
     opacity: 0; transform: translateY(4px) scale(0.97); transform-origin: bottom left; pointer-events: none; transition: opacity .15s var(--ease-out), transform .2s var(--ease-out); }
   .tip::after { content: ""; position: absolute; left: 14px; top: 100%; border: 6px solid transparent; border-top-color: var(--fg); }
   .regions li:nth-child(2n) .tip { left: auto; right: 0; transform-origin: bottom right; }
@@ -93,7 +91,7 @@
     box-shadow: inset 0 -4px 0 rgba(255,255,255,0.18), inset 0 0 6px rgba(255,255,255,0.15), 0 5px 7px -1px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.12); transition: box-shadow .3s var(--ease-out); overflow: visible; }
   .glass::before { content: ""; position: absolute; left: 50%; top: -12px; width: 14px; height: 12px; transform: translateX(-50%); border-radius: 3px 3px 1px 1px; background: linear-gradient(90deg, #9C844E, #F3E3B0 40%, #C9B27A 70%, #8A7342); box-shadow: 0 3px 0 -3px rgba(255,255,255,0.55), 0 1px 2px rgba(0,0,0,0.4); }
   .glass::after { content: ""; position: absolute; left: 14%; top: 8%; width: 14%; height: 70%; border-radius: 6px; background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(255,255,255,0.05)); pointer-events: none; }
-  .bottle b { display: block; margin-top: 8px; font-weight: 500; font-size: 0.6875rem; line-height: 1.2; color: #F5F6FA; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .bottle b { display: block; margin-top: 8px; font-weight: 500; font-size: 0.6875rem; line-height: 1.2; color: #ECE4D6; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
   .bottle small { display: block; font-size: 0.625rem; color: rgba(245, 246, 250, 0.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
   .bottle.scan .glass { box-shadow: inset 0 -4px 0 rgba(255,255,255,0.18), 0 0 0 2px rgba(255, 255, 255, 0.9), 0 0 16px rgba(255, 255, 255, 0.5); }
   .bottle.scan .glass::after { animation: sweep .45s var(--ease-out); }
@@ -102,7 +100,7 @@
   .bottle.fit .glass { box-shadow: inset 0 -4px 0 rgba(255,255,255,0.18), 0 0 0 2px #4ADE80, 0 0 10px rgba(74,222,128,0.45), 0 5px 7px -1px rgba(0,0,0,0.5); }
   .bottle.fit::after { content: ""; position: absolute; top: 2px; left: 50%; margin-left: 14px; width: 8px; height: 8px; border-radius: 50%; background: #4ADE80; box-shadow: 0 0 0 2px #1F9D55, 0 0 6px rgba(74,222,128,0.8); }
   .bottle.pick { transform: translateY(-8px); }
-  .bottle.pick .glass { box-shadow: inset 0 -4px 0 rgba(255,255,255,0.25), 0 0 0 2px #D4FF3A, 0 0 26px rgba(212, 255, 58, 0.8), 0 10px 12px -2px rgba(0,0,0,0.5); }
+  .bottle.pick .glass { box-shadow: inset 0 -4px 0 rgba(255,255,255,0.25), 0 0 0 2px #F3C3B4, 0 0 26px rgba(212, 255, 58, 0.8), 0 10px 12px -2px rgba(0,0,0,0.5); }
   .bottle.pick b { color: #fff; }
   .score { font: 500 0.5625rem var(--mono); color: rgba(245, 246, 250, 0.7); margin-top: 2px; opacity: 0; transition: opacity .3s; }
   .cabinet.judged .score { opacity: 1; }
@@ -167,7 +165,7 @@
 </script>
 </head>
 <body>
-<div class="backbar"><div class="backbar-in"><a href="../../index.html#projects">&larr; Berk Demirci</a><span>Fly wardrobe</span></div></div>
+<div class="backbar"><div class="backbar-in"><a href="../../work.html">&larr; Berk Demirci</a><span>Fly wardrobe</span></div></div>
 <main>
   <header class="top">
     <div><p class="label">koku &middot; fly wardrobe</p></div>
@@ -244,7 +242,7 @@ const FEMALE = { x: 640, y: 400 }; // she waits at the restaurant; he lands acro
 const LAND = { date: { x: 580, y: 400 } };
 const FRESH = ["narenciye", "ferah", "sulu", "yeşil", "aromatik", "ferah baharatlı", "ozonlu", "deniz"];
 const SWEET = ["tatlı", "vanilyalı", "amber", "sıcak baharatlı", "ballı", "kahveli", "çikolatalı", "karamelli"];
-const tint = (p) => p.a.some((a) => SWEET.includes(a)) ? "#FF3D7F" : p.a.some((a) => FRESH.includes(a)) ? "#2D5BFF" : "#8A4DFF";
+const tint = (p) => p.a.some((a) => SWEET.includes(a)) ? "#E5432A" : p.a.some((a) => FRESH.includes(a)) ? "#B4321E" : "#8A4DFF";
 
 let D, sceneIdx = -1, scene, shelf, pick, last = {}, gender = "erkek";
 let paused = false, phase = "idle", timer = 0;
@@ -401,8 +399,8 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.4;
 const world = new THREE.Scene();
-world.background = new THREE.Color("#F5F6FA");
-world.fog = new THREE.Fog("#F5F6FA", 12, 30);
+world.background = new THREE.Color("#ECE4D6");
+world.fog = new THREE.Fog("#ECE4D6", 12, 30);
 const cam = new THREE.PerspectiveCamera(38, 16 / 9, 0.05, 60);
 // overview of the whole map; drag to orbit, wheel or pinch to zoom
 const MAP_CENTER = new THREE.Vector3(0, 0, 0.25);
@@ -414,8 +412,8 @@ worldOrbit.touches = { ONE: null, TWO: THREE.TOUCH.DOLLY_ROTATE }; // one finger
 wc.style.touchAction = "pan-y";
 let fitted = 0;
 
-world.add(new THREE.HemisphereLight("#FFFFFF", "#AEB4C8", 1.25));
-const sun = new THREE.DirectionalLight("#FFFFFF", 2.2);
+world.add(new THREE.HemisphereLight("#F4EEE3", "#AEB4C8", 1.25));
+const sun = new THREE.DirectionalLight("#F4EEE3", 2.2);
 sun.position.set(-3, 6, 3);
 sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
@@ -428,7 +426,7 @@ const toW = (x, y) => new THREE.Vector3((x - W / 2) / S, 0, (y - H / 2) / S);
 const TILE_W = W / S + 0.7, TILE_D = H / S + 0.7, TILE_H = 0.14;
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshStandardMaterial({ color: "#E4E7F2", roughness: 1 }));
 ground.rotation.x = -Math.PI / 2; ground.position.y = -TILE_H; ground.receiveShadow = true; world.add(ground);
-const tile = new THREE.Mesh(new RoundedBoxGeometry(TILE_W, TILE_H * 2, TILE_D, 4, 0.12), new THREE.MeshStandardMaterial({ color: "#FFFFFF", roughness: 0.95 }));
+const tile = new THREE.Mesh(new RoundedBoxGeometry(TILE_W, TILE_H * 2, TILE_D, 4, 0.12), new THREE.MeshStandardMaterial({ color: "#F4EEE3", roughness: 0.95 }));
 tile.position.y = -TILE_H; tile.receiveShadow = tile.castShadow = true; world.add(tile);
 const grid = new THREE.GridHelper(TILE_W - 0.3, 36, "#DADCE8", "#E8EAF2");
 grid.scale.z = (TILE_D - 0.3) / (TILE_W - 0.3); grid.position.y = 0.001; world.add(grid);
@@ -441,7 +439,7 @@ function label(text) {
   x.font = "500 26px 'JetBrains Mono', monospace"; x.textAlign = "center"; x.textBaseline = "middle";
   x.fillStyle = "rgba(255,255,255,0.94)"; const w = x.measureText(text).width + 28;
   x.beginPath(); x.roundRect(128 - w / 2, 12, w, 40, 20); x.fill();
-  x.fillStyle = "#0B0B0F"; x.fillText(text, 128, 33);
+  x.fillStyle = "#1B1916"; x.fillText(text, 128, 33);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, transparent: true, sizeAttenuation: false }));
   s.scale.set(0.16, 0.04, 1); // screen-space, so labels stay readable at every zoom
@@ -454,7 +452,7 @@ const neon = mat("#FF4FB8", { emissive: "#FF4FB8", emissiveIntensity: 0.9 });
 const clubLight = new THREE.PointLight("#FF4FB8", 0.3, 1.2);
 let clubBall;
 function building(key) {
-  const g = new THREE.Group(), cream = mat("#FFFFFF"), dark = mat("#4A4A55"), acc = mat("#2D5BFF");
+  const g = new THREE.Group(), cream = mat("#F4EEE3"), dark = mat("#5E5850"), acc = mat("#B4321E");
   if (key === "home") {
     g.add(box(0.7, 0.45, 0.6, cream));
     const roof = new THREE.Mesh(new THREE.ConeGeometry(0.56, 0.3, 4), acc); roof.position.y = 0.6; roof.rotation.y = Math.PI / 4; roof.castShadow = true; g.add(roof);
@@ -485,7 +483,7 @@ function building(key) {
   } else if (key === "mall") {
     g.add(box(0.95, 0.36, 0.55, cream));
     const glass = box(0.8, 0.18, 0.01, mat("#A9C0FF", { emissive: "#A9C0FF", emissiveIntensity: 0.25 })); glass.position.set(0, 0.03, 0.28); g.add(glass);
-    ["#FF3D7F", "#1F9D55", "#FFB020", "#2D5BFF"].forEach((c, i) => { const aw = box(0.19, 0.03, 0.14, mat(c)); aw.position.set(-0.3 + i * 0.2, 0.24, 0.33); aw.rotation.x = 0.3; g.add(aw); });
+    ["#E5432A", "#1F9D55", "#FFB020", "#B4321E"].forEach((c, i) => { const aw = box(0.19, 0.03, 0.14, mat(c)); aw.position.set(-0.3 + i * 0.2, 0.24, 0.33); aw.rotation.x = 0.3; g.add(aw); });
     const sign = box(0.4, 0.08, 0.02, acc); sign.position.set(0, 0.3, 0.28); g.add(sign);
   } else if (key === "gym") {
     g.add(box(0.85, 0.4, 0.6, cream));
@@ -501,7 +499,7 @@ for (const [k, p] of Object.entries(PLACES)) {
   pad.rotation.x = -Math.PI / 2; pad.position.copy(at).setY(0.004); world.add(pad); pads[k] = pad;
   const disc = new THREE.Mesh(new THREE.CircleGeometry(0.16, 48), mat("#EEF0F8", { roughness: 1 }));
   disc.rotation.x = -Math.PI / 2; disc.position.copy(at).setY(0.003); disc.receiveShadow = true; world.add(disc);
-  const ripple = new THREE.Mesh(new THREE.RingGeometry(0.2, 0.22, 48), new THREE.MeshBasicMaterial({ color: "#2D5BFF", transparent: true, opacity: 0, depthWrite: false }));
+  const ripple = new THREE.Mesh(new THREE.RingGeometry(0.2, 0.22, 48), new THREE.MeshBasicMaterial({ color: "#B4321E", transparent: true, opacity: 0, depthWrite: false }));
   ripple.rotation.x = -Math.PI / 2; ripple.position.copy(at).setY(0.005); world.add(ripple); pad.userData.ripple = ripple;
   const b = building(k); b.position.copy(at).add(new THREE.Vector3(0, 0, -0.62)); world.add(b);
   const l = label(p.name.toUpperCase()); l.position.copy(at).add(new THREE.Vector3(0, 0.02, 0.42)); world.add(l);
@@ -550,7 +548,7 @@ plumeGeo.setAttribute("aFade", new THREE.BufferAttribute(new Float32Array(MAXP),
 plumeGeo.setAttribute("aSize", new THREE.BufferAttribute(new Float32Array(MAXP), 1));
 const plumeMat = new THREE.ShaderMaterial({
   transparent: true, depthWrite: false,
-  uniforms: { uColor: { value: new THREE.Color("#2D5BFF") }, uScale: { value: 400 } },
+  uniforms: { uColor: { value: new THREE.Color("#B4321E") }, uScale: { value: 400 } },
   vertexShader: `attribute float aFade; attribute float aSize; varying float vFade; uniform float uScale;
     void main(){ vFade = aFade; vec4 mv = modelViewMatrix * vec4(position,1.); gl_PointSize = min(aSize * uScale / -mv.z, 160.); gl_Position = projectionMatrix * mv; }`,
   fragmentShader: `uniform vec3 uColor; varying float vFade;
@@ -561,10 +559,10 @@ const plume = new THREE.Points(plumeGeo, plumeMat); plume.frustumCulled = false;
 // trail: line with per-vertex alpha via vertex colors blended toward the ground
 const MAXT = 900;
 const trailGeo = new LineGeometry(); trailGeo.setPositions(new Float32Array(MAXT * 3));
-const trailLine = new Line2(trailGeo, new LineMaterial({ color: "#2D5BFF", linewidth: 2.5, transparent: true, opacity: 0.75 }));
+const trailLine = new Line2(trailGeo, new LineMaterial({ color: "#B4321E", linewidth: 2.5, transparent: true, opacity: 0.75 }));
 trailLine.frustumCulled = false; world.add(trailLine);
 // ground shadow of the path, so altitude reads
-const shadowLine = new THREE.Line(new THREE.BufferGeometry().setAttribute("position", new THREE.BufferAttribute(new Float32Array(MAXT * 3), 3)), new THREE.LineBasicMaterial({ color: "#0B0B0F", transparent: true, opacity: 0.1 }));
+const shadowLine = new THREE.Line(new THREE.BufferGeometry().setAttribute("position", new THREE.BufferAttribute(new Float32Array(MAXT * 3), 3)), new THREE.LineBasicMaterial({ color: "#1B1916", transparent: true, opacity: 0.1 }));
 shadowLine.frustumCulled = false; world.add(shadowLine);
 function setTrailColor(c) { plumeMat.uniforms.uColor.value.set(c); trailLine.material.color.set(c); }
 
@@ -603,8 +601,8 @@ Object.assign(orbit, { enableZoom: false, enablePan: false, enableDamping: true,
 let dragging = false, idleAt = 0;
 orbit.addEventListener("start", () => { dragging = true; });
 orbit.addEventListener("end", () => { dragging = false; idleAt = performance.now() / 1000; });
-brainScene.add(new THREE.AmbientLight("#ffffff", 0.5));
-const key = new THREE.DirectionalLight("#FFFFFF", 1.6); key.position.set(2, 3, 4); brainScene.add(key);
+brainScene.add(new THREE.AmbientLight("#F4EEE3", 0.5));
+const key = new THREE.DirectionalLight("#F4EEE3", 1.6); key.position.set(2, 3, 4); brainScene.add(key);
 const rim = new THREE.DirectionalLight("#9FC3FF", 0.8); rim.position.set(-3, -1, -3); brainScene.add(rim);
 
 const REGIONS = [
@@ -815,7 +813,7 @@ function updateWorld(t, dt) {
   // pads: active destination breathes
   for (const [k, pad] of Object.entries(pads)) {
     const on = k === scene && phase !== "return" && phase !== "idle" && phase !== "home";
-    pad.material.color.set(on ? "#2D5BFF" : "#C9CDDC");
+    pad.material.color.set(on ? "#B4321E" : "#C9CDDC");
     pad.scale.setScalar(on ? 1 + Math.sin(t * 3) * 0.06 : 1);
     const rp = pad.userData.ripple, u = (t * 0.6) % 1;
     rp.scale.setScalar(1 + u * 1.6); rp.material.opacity = on && !still ? 0.5 * (1 - u) : 0;
